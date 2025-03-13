@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "maplarge.balancerServiceName" . }}
+  labels:
+    app.kubernetes.io/name: kubernetes-lb
+    app.kubernetes.io/component: load-balancer
+    app.kubernetes.io/part-of: {{ include "maplarge.name" . }}
+    application: {{ .Release.Name | quote }}
+    {{- include "maplarge.labels" . | nindent 4 }}
+spec:
+  type: "ClusterIP"
+  sessionAffinity: None
+  ports:
+    - port: 80
+      targetPort: {{ default "80" .Values.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- include "maplarge.selectorLabels" . | nindent 4 }}

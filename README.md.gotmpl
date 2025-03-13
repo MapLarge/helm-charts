@@ -1,0 +1,46 @@
+# MapLarge
+
+{{ template "chart.description" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+## Additional Information
+
+This helm chart will deploy MapLarge, but does require some input for a successful installation. We recommend creating a custom values file to manage the overrides that are needed for your environment. Use this file to deploy the chart.
+
+{{ template "chart.requirementsSection" . }}
+
+## Licensing
+
+There are two ways to install the MapLarge license with the chart:
+
+1. Create a secret with the license file, and a key of `_maplarge_license.lic` and provide the name of the secret to `.Values.license.existingSecretName`
+
+```console
+kubectl create secret generic maplarge-license --from-file=_maplarge_license.lic=/path/to/_maplarge_license.lic
+```
+
+1. Provide the content of the license file to `.Values.license.license` and the helm chart will generate the secret
+
+## Installing the Chart
+
+To install the chart with the release name `maplarge`:
+
+```console
+$ helm repo add maplarge https://maplarge.github.io/helm-charts
+$ helm install maplarge maplarge -f custom.values.yaml
+```
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+---
+
+To regenerate this README, run
+
+```
+docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:latest
+```

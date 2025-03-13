@@ -1,0 +1,13 @@
+
+{{- if .Values.license.license }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "maplarge.licenseName" . }}
+  labels:
+    application: {{ .Release.Name | quote }}
+    {{- include "maplarge.labels" . | nindent 4 }}
+type: Opaque
+data:
+  _maplarge_license.lic: {{ .Values.license.license | b64enc | quote }}
+{{ end }}

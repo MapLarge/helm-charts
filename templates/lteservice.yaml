@@ -1,0 +1,26 @@
+{{- if .Values.lte.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "maplarge.lteServiceName" . }}
+  labels:
+    application: {{ .Release.Name | quote }}
+    {{- include "maplarge.labels" . | nindent 4 }}
+  annotations:
+    metallb.universe.tf/address-pool: {{ .Values.lte.metalLbAddressPool | default "default" }}
+spec:
+  type: "LoadBalancer"
+  sessionAffinity: None
+  externalTrafficPolicy: {{ default "Local" .Values.lte.trafficPolicy }}
+  ports:
+    - port: 50595
+      targetPort: 50595
+      protocol: TCP
+      name: lte-50595
+    - port: 50597
+      targetPort: 50597
+      protocol: TCP
+      name: lte-50597
+  selector:
+    {{- include "maplarge.selectorLabels" . | nindent 4 }}
+{{- end }}
