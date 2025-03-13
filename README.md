@@ -4,6 +4,6 @@ MapLarge is a geospatial database and developer platform. It provides a central 
 
 This repository contains the custom helm chart to deploy MapLarge into a Kubernetes cluster.
 
-Full details for the Helm Chart configuration can be found in the chart's [README](./maplarge/README.md)
+Full details for the Helm Chart configuration can be found in the chart's [README](./charts/maplarge/README.md)
 
 For more information, contact [helpdesk@maplarge.com](mailto:helpdesk@maplarge.com)
