@@ -26,10 +26,11 @@ kubectl create secret generic maplarge-license --from-file=_maplarge_license.lic
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`:
+To install the chart with the release name `maplarge`:
 
 ```console
-$ helm install my-release maplarge -f custom.values.yaml
+$ helm repo add maplarge https://maplarge.github.io/helm-charts
+$ helm install maplarge maplarge -f custom.values.yaml
 ```
 
 ## Values
