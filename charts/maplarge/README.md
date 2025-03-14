@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 3.1.1](https://img.shields.io/badge/Version-3.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
+![Version: 3.2.0](https://img.shields.io/badge/Version-3.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
 
 ## Additional Information
 
@@ -53,7 +53,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | environmentVariables | list | `[{"name":"ML_STDERR_LOG_LEVEL","value":"2"},{"name":"ml_cfg_homepageRedirect","value":"dashboard"}]` | A map of extra environment variables to be added to the MapLarge container |
 | jsjs | object | `{"value":""}` | Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line. |
 | rootPassword | string | `nil` | If set, the root password will be set according to this value, otherwise a default value is created |
-| rootPasswordSecretName | string | `nil` | Deprecated, use existingRootPasswordSecretName instead. |
+| rootPasswordSecretName | string | `nil` | If set, defines the name of the secret for the root password |
 
 ### General
 
