@@ -87,13 +87,11 @@ spec:
           securityContext: {{- (toYaml .Values.securityContext | trim | nindent 12) }}
         {{- end }}
           env:
-          {{- if or (.Values.rootPasswordSecretName) (.Values.rootPassword) }}
           - name: ML_ROOT_PASS
             valueFrom:
               secretKeyRef:
                 name: {{ $rootPasswordSecretName }}
                 key: rootPassword
-          {{- end }}
           - name: ML_REPL_ENABLED
             value: "false"
           - name: ML_CLIENT_CONFIG_ENABLE_CORS

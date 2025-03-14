@@ -71,10 +71,13 @@ appDataVolumeStorageClassName: openebs-hostpath
 # @section -- MapLarge Configuration
 rootPassword:
 
-# -- Can be set to an existing secret to use for the root password, or will create a root password secret based on the chart package name
+# -- If set, defines the name of the secret for the root password
 # @section -- MapLarge Configuration
 rootPasswordSecretName:
-# If using an existing secret, the key must be set to `rootPassword`
+
+# -- An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword`
+# @section -- MapLarge Configuration
+existingRootPasswordSecretName:
 
 # Some MapLarge configurations can be controlled via environment variables. These
 # can be set here.
