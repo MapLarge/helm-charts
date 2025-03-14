@@ -147,8 +147,8 @@ Root password secret name
 */}}
 
 {{- define "maplarge.rootPasswordSecretName" }}
-  {{- if .Values.rootPasswordSecretName }}
-    {{- .Values.rootPasswordSecretName }}
+  {{- if .Values.existingRootPasswordSecretName }}
+    {{- .Values.existingRootPasswordSecretName }}
   {{- else }}
     {{- include "maplarge.fullname" . -}}-root-password-secret
   {{- end }}
