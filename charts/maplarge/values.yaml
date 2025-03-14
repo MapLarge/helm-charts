@@ -76,6 +76,7 @@ rootPassword:
 rootPasswordSecretName:
 
 # -- An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword`
+# @section -- MapLarge Configuration
 existingRootPasswordSecretName:
 
 # Some MapLarge configurations can be controlled via environment variables. These
