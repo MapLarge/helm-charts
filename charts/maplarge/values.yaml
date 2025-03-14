@@ -71,6 +71,12 @@ appDataVolumeStorageClassName: openebs-hostpath
 # @section -- MapLarge Configuration
 rootPassword:
 
+# -- Deprecated, use existingRootPasswordSecretName instead.
+# @section -- MapLarge Configuration
+rootPasswordSecretName:
+# If using an existing secret, the key must be set to `rootPassword`
+
+
 # -- An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword`
 existingRootPasswordSecretName:
 
