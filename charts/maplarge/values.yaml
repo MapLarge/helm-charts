@@ -54,7 +54,7 @@ resources:
     # -- The CPU Request to set for the pod
     # @section -- Deployment Resources
     cpu: 1
-    # -- The Meory Request to set for the pod
+    # -- The Memory Request to set for the pod
     # @section -- Deployment Resources
     memory: 4Gi
 
@@ -230,20 +230,15 @@ securityContext: {}
 #     add: ["NET_ADMIN", "SYS_TIME"]
 #   allowPrivilegeEscalation: false
 
-# Docker Credentials Settings (dockerCredentials) - this will create your pull secret for you.
-dockerCredentials:
-  # -- The docker registry where the associated user exists
-  # @section -- Docker configurations
-  registry:
-  # -- The username used to pull the image from a private registry
-  # @section -- Docker configurations
-  username:
-  # -- The password used to pull the image from a private registry
-  # @section -- Docker configurations
-  password:
-  # -- The email associated with the user to pull the image from the private registry
-  # @section -- Docker configurations
-  email:
+# -- this will create your pull secret for you. Required fields are registry, username, password, and email
+# @section -- Docker configurations
+dockerCredentials: {}
+# Example: 
+#   registry: docker.io
+#   username: dockerhubusername
+#   password: dockerhubpassword
+#   email: dockerhub@emailaddress.com
+
 
 
 # This configuration allows the pod ten seconds to sixty minutes to become ready on startup.
