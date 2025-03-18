@@ -234,16 +234,16 @@ securityContext: {}
 dockerCredentials:
   # -- The docker registry where the associated user exists
   # @section -- Docker configurations
-  registry: docker.io
+  registry:
   # -- The username used to pull the image from a private registry
   # @section -- Docker configurations
-  username: dockerhubusername
+  username:
   # -- The password used to pull the image from a private registry
   # @section -- Docker configurations
-  password: dockerhubpassword
+  password:
   # -- The email associated with the user to pull the image from the private registry
   # @section -- Docker configurations
-  email: dockerhub@emailaddress.com
+  email:
 
 
 # This configuration allows the pod ten seconds to sixty minutes to become ready on startup.
