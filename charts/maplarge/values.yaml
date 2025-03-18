@@ -54,7 +54,7 @@ resources:
     # -- The CPU Request to set for the pod
     # @section -- Deployment Resources
     cpu: 1
-    # -- The Meory Request to set for the pod
+    # -- The Memory Request to set for the pod
     # @section -- Deployment Resources
     memory: 4Gi
 
