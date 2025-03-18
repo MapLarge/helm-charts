@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 3.2.0](https://img.shields.io/badge/Version-3.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
+![Version: 3.2.1](https://img.shields.io/badge/Version-3.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
 
 ## Additional Information
 
@@ -99,10 +99,10 @@ $ helm install maplarge maplarge -f custom.values.yaml
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| dockerCredentials.email | string | `"dockerhub@emailaddress.com"` | The email associated with the user to pull the image from the private registry |
-| dockerCredentials.password | string | `"dockerhubpassword"` | The password used to pull the image from a private registry |
-| dockerCredentials.registry | string | `"docker.io"` | The docker registry where the associated user exists |
-| dockerCredentials.username | string | `"dockerhubusername"` | The username used to pull the image from a private registry |
+| dockerCredentials.email | string | `nil` | The email associated with the user to pull the image from the private registry |
+| dockerCredentials.password | string | `nil` | The password used to pull the image from a private registry |
+| dockerCredentials.registry | string | `nil` | The docker registry where the associated user exists |
+| dockerCredentials.username | string | `nil` | The username used to pull the image from a private registry |
 
 ### Image Information
 
