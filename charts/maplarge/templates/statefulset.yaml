@@ -19,7 +19,7 @@ spec:
   {{- if .Values.autoscaling.enabled }}
   {{- end }}
   {{- else}}
-  replicas: {{ default 1 .Values.replicas }}
+  replicas: {{ max 0 .Values.replicas }}
   {{- end }}
   podManagementPolicy: {{ .Values.podManagementPolicy | quote }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
