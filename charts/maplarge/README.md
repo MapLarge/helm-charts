@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 3.2.3](https://img.shields.io/badge/Version-3.2.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
+![Version: 3.2.4](https://img.shields.io/badge/Version-3.2.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
 
 ## Additional Information
 
@@ -148,6 +148,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | notebooks.enabled | bool | `false` | Enables MapLarge Notebooks and creates the necessary Service Account, Role and RoleBinding |
+| notebooks.environmentVariables | list | `[]` | A list of environment variables that may need to be added to MapLarge for a Notebook deployment |
 | notebooks.jsjs | object | `{"value":"ml.config.enableProjects = true;\nml.config.enableNotebooks = true;\n"}` | A list of Notebook specific js.js configurations to add to the default js.js |
 
 ### Deployment Resources
