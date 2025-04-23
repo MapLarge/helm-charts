@@ -233,7 +233,7 @@ securityContext: {}
 # -- this will create your pull secret for you. Required fields are registry, username, password, and email
 # @section -- Docker configurations
 dockerCredentials: {}
-# Example: 
+# Example:
 #   registry: docker.io
 #   username: dockerhubusername
 #   password: dockerhubpassword
@@ -325,6 +325,9 @@ notebooks:
     value: |
       ml.config.enableProjects = true;
       ml.config.enableNotebooks = true;
+  # -- A list of environment variables that may need to be added to MapLarge for a Notebook deployment
+  # @section -- Notebook configurations
+  environmentVariables: []
 
 ## Database preload configurations
 # -- preloadMLData.enabled Enables MapLarge to preload data from a remote docker image
