@@ -205,7 +205,7 @@ spec:
           {{- end }}
           {{- if .Values.extraVolumeMounts }}
           {{- with .Values.extraVolumeMounts }}
-          {{- toYaml . | nindent 10 }}
+          {{ toYaml . | nindent 10}}
           {{- end }}
           {{- end }}
       {{- with .Values.nodeSelector }}
@@ -300,7 +300,7 @@ spec:
         {{- end }}
         {{- if .Values.extraVolumes }}
         {{- with .Values.extraVolumes }}
-        {{- toYaml . | nindent 8 }}
+        {{ toYaml . | nindent 8 }}
         {{- end }}
         {{- end }}
   updateStrategy:

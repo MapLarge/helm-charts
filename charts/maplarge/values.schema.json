@@ -1,0 +1,941 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "appDataVolumeSizeInGB": {
+      "default": "100",
+      "description": "appDataVolumeSizeInGB Requested size of PVC to be created.",
+      "required": [],
+      "title": "appDataVolumeSizeInGB"
+    },
+    "appDataVolumeStorageClassName": {
+      "default": "openebs-hostpath",
+      "description": "appDataVolumeStorageClassName Requested storage class name.",
+      "required": [],
+      "title": "appDataVolumeStorageClassName"
+    },
+    "authPlugin": {
+      "additionalProperties": true,
+      "description": "Specifies an authentication plugin",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "description": "Determines if the authPlugin should be enabled",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "filename": {
+          "default": "",
+          "description": "Specifices the path in the container where the authPlugin configuration file can be found. Can be left blank.",
+          "required": [],
+          "title": "filename",
+          "type": "string"
+        },
+        "typeName": {
+          "default": "",
+          "description": "Specifies the MapLarge authPlugin to use",
+          "required": [],
+          "title": "typeName",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "authPlugin"
+    },
+    "clusterConfig": {
+      "default": "",
+      "description": "Extra configuration options for cluster.json",
+      "required": [],
+      "title": "clusterConfig",
+      "type": "null"
+    },
+    "config": {
+      "default": "",
+      "description": "Allows for custom configurations for the MapLarge config.json.",
+      "required": [],
+      "title": "config",
+      "type": "null"
+    },
+    "contentSecurityPolicy": {
+      "description": "\nContent Security Policy settings and overrides, if needed for an ingress object.\nWill be processed with baseHostName to generate correct policy",
+      "properties": {
+        "defaultSrc": {
+          "default": "",
+          "required": [],
+          "title": "defaultSrc",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "fontSrc": {
+          "default": "",
+          "required": [],
+          "title": "fontSrc",
+          "type": "string"
+        },
+        "frameAncestors": {
+          "default": "",
+          "required": [],
+          "title": "frameAncestors",
+          "type": "string"
+        },
+        "frameSrc": {
+          "default": "",
+          "required": [],
+          "title": "frameSrc",
+          "type": "string"
+        },
+        "imgSrc": {
+          "default": "",
+          "required": [],
+          "title": "imgSrc",
+          "type": "string"
+        },
+        "mediaSrc": {
+          "default": "",
+          "required": [],
+          "title": "mediaSrc",
+          "type": "string"
+        },
+        "scriptSrc": {
+          "default": "",
+          "required": [],
+          "title": "scriptSrc",
+          "type": "string"
+        },
+        "styleSrc": {
+          "default": "",
+          "required": [],
+          "title": "styleSrc",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "contentSecurityPolicy",
+      "type": "object"
+    },
+    "dockerCredentials": {
+      "additionalProperties": true,
+      "description": "this will create your pull secret for you. Required fields are registry, username, password, and email",
+      "required": [],
+      "title": "dockerCredentials"
+    },
+    "environmentVariables": {
+      "description": "Some MapLarge configurations can be controlled via environment variables. These\ncan be set here.\nA map of extra environment variables to be added to the MapLarge container",
+      "items": {
+        "anyOf": [
+          {
+            "properties": {
+              "name": {
+                "default": "ML_STDERR_LOG_LEVEL",
+                "required": [],
+                "title": "name",
+                "type": "string"
+              },
+              "value": {
+                "default": "2",
+                "required": [],
+                "title": "value",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "name": {
+                "default": "ml_cfg_homepageRedirect",
+                "required": [],
+                "title": "name",
+                "type": "string"
+              },
+              "value": {
+                "default": "dashboard",
+                "required": [],
+                "title": "value",
+                "type": "string"
+              }
+            },
+            "required": [],
+            "type": "object"
+          }
+        ],
+        "required": []
+      },
+      "required": [],
+      "title": "environmentVariables",
+      "type": "array"
+    },
+    "existingRootPasswordSecretName": {
+      "default": "",
+      "description": "An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword`",
+      "required": [],
+      "title": "existingRootPasswordSecretName",
+      "type": "null"
+    },
+    "extraLabels": {
+      "description": "(map) extraLabels Extra labels to apply to all resources",
+      "required": [],
+      "title": "extraLabels",
+      "type": "object"
+    },
+    "extraVolumeMounts": {
+      "description": "extraVolumeMounts Specify any extra list of additional volumeMounts for MapLarge",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "extraVolumeMounts",
+      "type": "array"
+    },
+    "extraVolumes": {
+      "description": "extraVolumes Specify any extra list of additional volumes for MapLarge",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "extraVolumes",
+      "type": "array"
+    },
+    "global": {
+      "description": "Global values are values that can be accessed from any chart or subchart by exactly the same name.",
+      "required": [],
+      "title": "global",
+      "type": "object"
+    },
+    "hostnameOverride": {
+      "default": "",
+      "description": "Rarely there is a time when you need to set the MapLarge hostname to something other than the ingress hostname, but if you do have that scenario, you can provide a hostname here to override the value that will be derived from the ingress.hosts[0].basehostname. Note, this does not modify the ingress hostname value.",
+      "required": [],
+      "title": "hostnameOverride",
+      "type": "null"
+    },
+    "image": {
+      "properties": {
+        "pullPolicy": {
+          "default": "IfNotPresent",
+          "description": "Image pull policy",
+          "required": [],
+          "title": "pullPolicy",
+          "type": "string"
+        },
+        "pullSecretName": {
+          "default": "maplarge-dockerhub-pull-secret",
+          "description": "Secret to create or use to pull the docker image from the registry",
+          "required": [],
+          "title": "pullSecretName",
+          "type": "string"
+        },
+        "repository": {
+          "default": "docker.io/maplarge/server-netcore-dev",
+          "description": "The fully qualified repository where the MapLarge image should be pulled from",
+          "required": [],
+          "title": "repository",
+          "type": "string"
+        },
+        "tag": {
+          "default": "",
+          "description": "The MapLarge image tag to pull",
+          "required": [],
+          "title": "tag",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "image"
+    },
+    "ingress": {
+      "properties": {
+        "annotations": {
+          "additionalProperties": true,
+          "description": "Annotations to set on the ingress object",
+          "properties": {
+            "nginx.ingress.kubernetes.io/proxy-body-size": {
+              "default": "2000m",
+              "required": [],
+              "title": "nginx.ingress.kubernetes.io/proxy-body-size",
+              "type": "string"
+            },
+            "nginx.ingress.kubernetes.io/proxy-connect-timeout": {
+              "default": "30",
+              "required": [],
+              "title": "nginx.ingress.kubernetes.io/proxy-connect-timeout",
+              "type": "string"
+            },
+            "nginx.ingress.kubernetes.io/proxy-read-timeout": {
+              "default": "600",
+              "required": [],
+              "title": "nginx.ingress.kubernetes.io/proxy-read-timeout",
+              "type": "string"
+            },
+            "nginx.ingress.kubernetes.io/proxy-send-timeout": {
+              "default": "600",
+              "required": [],
+              "title": "nginx.ingress.kubernetes.io/proxy-send-timeout",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "annotations"
+        },
+        "class": {
+          "default": "nginx-internal",
+          "description": "Ingress class to use",
+          "required": [],
+          "title": "class",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "description": "Enable ingress object",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "hosts": {
+          "additionalProperties": true,
+          "items": {
+            "anyOf": [
+              {
+                "properties": {
+                  "baseHostname": {
+                    "default": "customer-a.dev.maplarge.net",
+                    "required": [],
+                    "title": "baseHostname",
+                    "type": "string"
+                  },
+                  "prefixes": {
+                    "default": 8,
+                    "description": "The number of dns prefixes to create",
+                    "required": [],
+                    "title": "prefixes",
+                    "type": "integer"
+                  },
+                  "tls": {
+                    "properties": {
+                      "enabled": {
+                        "default": true,
+                        "description": "Controls if the site is TLS protected",
+                        "required": [],
+                        "title": "enabled",
+                        "type": "boolean"
+                      },
+                      "secretName": {
+                        "default": "wildcard-dev-maplarge-net-tls-secret",
+                        "description": "The TLS secret to use if TLS protected",
+                        "required": [],
+                        "title": "secretName",
+                        "type": "string"
+                      }
+                    },
+                    "required": [],
+                    "title": "tls",
+                    "type": "object"
+                  }
+                },
+                "required": [],
+                "type": "object"
+              }
+            ],
+            "required": []
+          },
+          "required": [],
+          "title": "hosts"
+        }
+      },
+      "required": [],
+      "title": "ingress",
+      "type": "object"
+    },
+    "interClusterConfigJson": {
+      "default": "",
+      "description": " JSON object used to pre-populate intercluster sync settings",
+      "required": [],
+      "title": "interClusterConfigJson",
+      "type": "null"
+    },
+    "jsjs": {
+      "description": "Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line.",
+      "properties": {
+        "value": {
+          "default": "",
+          "required": [],
+          "title": "value",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "jsjs",
+      "type": "object"
+    },
+    "license": {
+      "properties": {
+        "existingSecretName": {
+          "default": "",
+          "description": "A secret name for an existing license secret. If creating your own license secret, the key must be \"_maplarge_license.lic\"",
+          "required": [],
+          "title": "existingSecretName",
+          "type": "null"
+        },
+        "license": {
+          "default": "",
+          "description": "The content of the MapLarge license if one has been provided to you",
+          "required": [],
+          "title": "license",
+          "type": "null"
+        }
+      },
+      "required": [],
+      "title": "license",
+      "type": "object"
+    },
+    "livenessProbe": {
+      "properties": {
+        "failureThreshold": {
+          "default": 6,
+          "description": "Failure threshold for livenessProbe",
+          "required": [],
+          "title": "failureThreshold",
+          "type": "integer"
+        },
+        "httpGet": {
+          "properties": {
+            "path": {
+              "default": "/Cluster/IsAlive",
+              "description": "Endpoint for the livenessProbe",
+              "required": [],
+              "title": "path",
+              "type": "string"
+            },
+            "port": {
+              "default": "http",
+              "description": "Port for the livenessProbe",
+              "required": [],
+              "title": "port",
+              "type": "string"
+            },
+            "scheme": {
+              "default": "HTTP",
+              "description": "Scheme for the livenessProbe",
+              "required": [],
+              "title": "scheme",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "httpGet",
+          "type": "object"
+        },
+        "initialDelaySeconds": {
+          "default": 0,
+          "description": "Initial delay seconds for livenessProbe",
+          "required": [],
+          "title": "initialDelaySeconds",
+          "type": "integer"
+        },
+        "periodSeconds": {
+          "default": 5,
+          "description": "Period seconds for livenessProbe",
+          "required": [],
+          "title": "periodSeconds",
+          "type": "integer"
+        },
+        "successThreshold": {
+          "default": 1,
+          "description": "Success Threshold for livenessProbe",
+          "required": [],
+          "title": "successThreshold",
+          "type": "integer"
+        },
+        "timeoutSeconds": {
+          "default": 2,
+          "description": "Timeout seconds for livenessProbe",
+          "required": [],
+          "title": "timeoutSeconds",
+          "type": "integer"
+        }
+      },
+      "required": [],
+      "title": "livenessProbe",
+      "type": "object"
+    },
+    "lte": {
+      "description": "Enables LTE ports and LoadBalancer, and specifies a MetalLB address pool to use",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "metalLbAddressPool": {
+          "default": "default",
+          "required": [],
+          "title": "metalLbAddressPool",
+          "type": "string"
+        },
+        "trafficPolicy": {
+          "default": "Local",
+          "description": "Options Cluster or Local https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/\nCluster has better loadbalancing but the client IP address is hidden from app, but for LTE services it is usually\nmore desirable to get the client's IP address",
+          "required": [],
+          "title": "trafficPolicy",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "lte",
+      "type": "object"
+    },
+    "nodeAffinityPreferences": {
+      "description": " Sets the node affinity preferences for the MapLarge pod",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "nodeAffinityPreferences",
+      "type": "array"
+    },
+    "nodeAffinityRequirements": {
+      "description": "Sets the nodeAffinityRequirements for the pod",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "nodeAffinityRequirements",
+      "type": "array"
+    },
+    "nodeSelector": {
+      "description": "Sets the node selector for the MapLarge pod",
+      "required": [],
+      "title": "nodeSelector",
+      "type": "object"
+    },
+    "notebooks": {
+      "properties": {
+        "enabled": {
+          "default": false,
+          "description": "Enables MapLarge Notebooks and creates the necessary Service Account, Role and RoleBinding",
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "jsjs": {
+          "description": "A list of Notebook specific js.js configurations to add to the default js.js",
+          "properties": {
+            "value": {
+              "default": "ml.config.enableProjects = true;\nml.config.enableNotebooks = true;\n",
+              "required": [],
+              "title": "value",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "jsjs",
+          "type": "object"
+        }
+      },
+      "required": [],
+      "title": "notebooks",
+      "type": "object"
+    },
+    "persistConfiguration": {
+      "default": false,
+      "description": "When set to `true`, `config.json` will be saved to `App_Data/config`.\nWhen set to `false`, all configuation must be set by environment variables, mapped from a `ConfigMap` or otherwise managed by the administrator and mounted to the location `/opt/maplarge/config/config.json` (by default)\npersistConfiguration Determines how MapLarge configurations are to be persisted in the deployment",
+      "required": [],
+      "title": "persistConfiguration",
+      "type": "boolean"
+    },
+    "podAnnotations": {
+      "description": "podAnnotations Extra annotations to add to your pods' metadata. Usually unnecessary.",
+      "required": [],
+      "title": "podAnnotations",
+      "type": "object"
+    },
+    "podManagementPolicy": {
+      "default": "Parallel",
+      "description": "podManagementPolicy Parallel (default) or OrderedReady",
+      "required": [],
+      "title": "podManagementPolicy",
+      "type": "string"
+    },
+    "podSecurityContext": {
+      "additionalProperties": true,
+      "description": " Sets the podSecurityContext",
+      "required": [],
+      "title": "podSecurityContext"
+    },
+    "preferNodeAntiAffinity": {
+      "default": false,
+      "description": "Set to true if you want to prefer that your replicas are placed on distinct nodes.",
+      "required": [],
+      "title": "preferNodeAntiAffinity",
+      "type": "boolean"
+    },
+    "preloadMLData": {
+      "description": "# Database preload configurations\npreloadMLData.enabled Enables MapLarge to preload data from a remote docker image\npreloadMLData.image.pullPolicy Sets the image pull policy for the preload data image\npreloadMLData.image.repository The docker image containing the preload data required\npreloadMLData.image.tag The docker tag of the image preload docker image",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "required": [],
+          "title": "enabled",
+          "type": "boolean"
+        },
+        "image": {
+          "properties": {
+            "pullPolicy": {
+              "default": "IfNotPresent",
+              "required": [],
+              "title": "pullPolicy",
+              "type": "string"
+            },
+            "repository": {
+              "default": "docker.io/maplarge/data-snapshots",
+              "required": [],
+              "title": "repository",
+              "type": "string"
+            },
+            "tag": {
+              "default": "1-3-2022_4_10",
+              "required": [],
+              "title": "tag",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "image",
+          "type": "object"
+        }
+      },
+      "required": [],
+      "title": "preloadMLData",
+      "type": "object"
+    },
+    "readinessProbe": {
+      "properties": {
+        "failureThreshold": {
+          "default": 3,
+          "description": "Failure threshold for readinessProbe",
+          "required": [],
+          "title": "failureThreshold",
+          "type": "integer"
+        },
+        "httpGet": {
+          "properties": {
+            "path": {
+              "default": "/Cluster/IsReadyForUser",
+              "description": "Endpoint for the readinessProbe",
+              "required": [],
+              "title": "path",
+              "type": "string"
+            },
+            "port": {
+              "default": "http",
+              "description": "Port for the readinessProbe",
+              "required": [],
+              "title": "port",
+              "type": "string"
+            },
+            "scheme": {
+              "default": "HTTP",
+              "description": "Scheme for the readinessProbe",
+              "required": [],
+              "title": "scheme",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "httpGet",
+          "type": "object"
+        },
+        "initialDelaySeconds": {
+          "default": 0,
+          "description": "Initial delay seconds for readinessProbe",
+          "required": [],
+          "title": "initialDelaySeconds",
+          "type": "integer"
+        },
+        "periodSeconds": {
+          "default": 5,
+          "description": "Period seconds for readinessProbe",
+          "required": [],
+          "title": "periodSeconds",
+          "type": "integer"
+        },
+        "successThreshold": {
+          "default": 2,
+          "description": "Success Threshold for readinessProbe",
+          "required": [],
+          "title": "successThreshold",
+          "type": "integer"
+        },
+        "timeoutSeconds": {
+          "default": 2,
+          "description": "Timeout seconds for readinessProbe",
+          "required": [],
+          "title": "timeoutSeconds",
+          "type": "integer"
+        }
+      },
+      "required": [],
+      "title": "readinessProbe",
+      "type": "object"
+    },
+    "replicas": {
+      "default": "3",
+      "description": "replicas The number of replicas to create in the StatefulSet. Defaults to 1. Has no effect if horizontal pod autoscaling is enabled.",
+      "required": [],
+      "title": "replicas"
+    },
+    "requireNodeAntiAffinity": {
+      "default": true,
+      "description": "Set to true if you want to REQUIRE that your replicas are placed on different nodes.",
+      "required": [],
+      "title": "requireNodeAntiAffinity",
+      "type": "boolean"
+    },
+    "resources": {
+      "description": "Limits are enforced by Kubernetes. If you exceed memory limit, your container may be killed without warning.\nRequests must be less than or equal to limits. Usually set them equal to limits.",
+      "properties": {
+        "limits": {
+          "properties": {
+            "cpu": {
+              "default": 4,
+              "description": "The CPU Limit to set for the pod",
+              "required": [],
+              "title": "cpu",
+              "type": "integer"
+            },
+            "memory": {
+              "default": "8Gi",
+              "description": "The Memory Limit to set for the pod",
+              "required": [],
+              "title": "memory",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "limits",
+          "type": "object"
+        },
+        "requests": {
+          "properties": {
+            "cpu": {
+              "default": 1,
+              "description": "The CPU Request to set for the pod",
+              "required": [],
+              "title": "cpu",
+              "type": "integer"
+            },
+            "memory": {
+              "default": "4Gi",
+              "description": "The Memory Request to set for the pod",
+              "required": [],
+              "title": "memory",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "requests",
+          "type": "object"
+        }
+      },
+      "required": [],
+      "title": "resources",
+      "type": "object"
+    },
+    "revisionHistoryLimit": {
+      "default": 10,
+      "description": "revisionHistoryLimit",
+      "required": [],
+      "title": "revisionHistoryLimit",
+      "type": "integer"
+    },
+    "rootPassword": {
+      "default": "",
+      "description": "If set, the root password will be set according to this value, otherwise a default value is created",
+      "required": [],
+      "title": "rootPassword",
+      "type": "null"
+    },
+    "rootPasswordSecretName": {
+      "default": "",
+      "description": "If set, defines the name of the secret for the root password",
+      "required": [],
+      "title": "rootPasswordSecretName",
+      "type": "null"
+    },
+    "securityContext": {
+      "description": " Sets the securityContext",
+      "required": [],
+      "title": "securityContext",
+      "type": "object"
+    },
+    "service": {
+      "properties": {
+        "targetPort": {
+          "default": "80",
+          "description": "If the MapLarge container is configured to serve requests on a port other than 80, define it here",
+          "required": [],
+          "title": "targetPort"
+        }
+      },
+      "required": [
+        "targetPort"
+      ],
+      "title": "service",
+      "type": "object"
+    },
+    "serviceAccount": {
+      "description": "Used for an InitContainer when MapLarge Notebooks are enabled.\nThis can be changed to any image desired as the initContainers\nare only running simple shell commands\nworkloadSchedulerScratchImage: \"busybox\"",
+      "properties": {
+        "create": {
+          "default": false,
+          "description": "Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false.",
+          "required": [],
+          "title": "create",
+          "type": "boolean"
+        },
+        "name": {
+          "default": "",
+          "description": "To use an existing service account, provide the name here. If not set and create is true, a name is generated using the maplarge.name template.",
+          "required": [],
+          "title": "name",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "title": "serviceAccount",
+      "type": "object"
+    },
+    "simpleNodeAffinityPreferences": {
+      "description": "Sets simple node affinity preferences for the MapLarge pod",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "simpleNodeAffinityPreferences",
+      "type": "array"
+    },
+    "simpleNodeAffinityRequirements": {
+      "description": "Sets the simpleNodeAffinityRequirements for the pod",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "simpleNodeAffinityRequirements",
+      "type": "array"
+    },
+    "simpleTolerations": {
+      "description": "Sets a simple toleration for the MapLarge pod",
+      "items": {
+        "required": []
+      },
+      "required": [],
+      "title": "simpleTolerations",
+      "type": "array"
+    },
+    "startupProbe": {
+      "description": "This configuration allows the pod ten seconds to sixty minutes to become ready on startup.",
+      "properties": {
+        "failureThreshold": {
+          "default": 360,
+          "description": "Failure threshold for startupProbe",
+          "required": [],
+          "title": "failureThreshold",
+          "type": "integer"
+        },
+        "httpGet": {
+          "description": "Endpoint for the startup probe",
+          "properties": {
+            "path": {
+              "default": "/Cluster/IsReady",
+              "required": [],
+              "title": "path",
+              "type": "string"
+            },
+            "port": {
+              "default": "http",
+              "description": "Port for the startup probe",
+              "required": [],
+              "title": "port",
+              "type": "string"
+            },
+            "scheme": {
+              "default": "HTTP",
+              "description": "Scheme for the startup probe",
+              "required": [],
+              "title": "scheme",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "title": "httpGet",
+          "type": "object"
+        },
+        "periodSeconds": {
+          "default": 10,
+          "description": "Period seconds for startupProbe",
+          "required": [],
+          "title": "periodSeconds",
+          "type": "integer"
+        }
+      },
+      "required": [],
+      "title": "startupProbe",
+      "type": "object"
+    },
+    "terminationGracePeriodSeconds": {
+      "default": 120,
+      "description": "terminationGracePeriodSeconds How long to wait for graceful exit",
+      "required": [],
+      "title": "terminationGracePeriodSeconds",
+      "type": "integer"
+    },
+    "terminationMessagePath": {
+      "default": "/dev/termination-log",
+      "description": "terminationMessagePath",
+      "required": [],
+      "title": "terminationMessagePath",
+      "type": "string"
+    },
+    "terminationMessagePolicy": {
+      "default": "File",
+      "description": "terminationMessagePolicy",
+      "required": [],
+      "title": "terminationMessagePolicy",
+      "type": "string"
+    },
+    "tolerations": {
+      "description": "Sets the tolerations for the MapLarge pod",
+      "required": [],
+      "title": "tolerations",
+      "type": "object"
+    },
+    "updateStrategyType": {
+      "default": "RollingUpdate",
+      "description": "updateStrategyType RollingUpdate (default) or OnDelete (will only update when you delete pod)",
+      "required": [],
+      "title": "updateStrategyType",
+      "type": "string"
+    },
+    "useTransactionalDatabase": {
+      "default": true,
+      "description": "useTransactionalDatabase NEED DEFINITION",
+      "required": [],
+      "title": "useTransactionalDatabase",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "image",
+    "replicas",
+    "appDataVolumeSizeInGB",
+    "appDataVolumeStorageClassName"
+  ],
+  "type": "object"
+}

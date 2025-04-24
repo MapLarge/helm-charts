@@ -2,13 +2,16 @@
 # 1. App information             #
 ##################################
 
+# @schema
+# required: true
+# @schema
 image:
   # -- Image pull policy
   # @section -- Image Information
   pullPolicy: IfNotPresent
   # -- Secret to create or use to pull the docker image from the registry
   # @section -- Image Information
-  pullSecretName: maplarge-dockerhub-pull-secret
+  pullSecretName:
   # -- An array of any extra image pull secrets to add to the pod definition, in
   # @section -- Image Information
   extraPullSecrets: []
@@ -17,10 +20,10 @@ image:
   #   - name: my-pull-secret
   # -- The fully qualified repository where the MapLarge image should be pulled from
   # @section -- Image Information
-  repository: docker.io/maplarge/server-netcore-dev
+  repository:
   # -- The MapLarge image tag to pull
   # @section -- Image Information
-  tag:
+  tag: ""
 
 license:
   # -- A secret name for an existing license secret. If creating your own license secret, the key must be "_maplarge_license.lic"
@@ -32,6 +35,9 @@ license:
 
 # -- replicas The number of replicas to create in the StatefulSet. Defaults to 1. Has no effect if horizontal pod autoscaling is enabled.
 # @section -- General
+# @schema
+# required: true
+# @schema
 replicas: 3
 
 # When set to `true`, `config.json` will be saved to `App_Data/config`.
@@ -65,11 +71,17 @@ resources:
 
 # -- appDataVolumeSizeInGB Requested size of PVC to be created.
 # @section -- Storage Information
+# @schema
+# required: true
+# @schema
 appDataVolumeSizeInGB: 100
 
 # -- appDataVolumeStorageClassName Requested storage class name.
 # @section -- Storage Information
-appDataVolumeStorageClassName: openebs-hostpath
+# @schema
+# required: true
+# @schema
+appDataVolumeStorageClassName:
 
 # -- If set, the root password will be set according to this value, otherwise a default value is created
 # @section -- MapLarge Configuration
@@ -219,6 +231,9 @@ nodeAffinityRequirements: []
 
 # --  Sets the podSecurityContext
 # @section -- General
+# @schema
+# additionalProperties: true
+# @schema
 podSecurityContext: {}
 # Example:
 #   runAsUser: 1000
@@ -228,6 +243,9 @@ podSecurityContext: {}
 
 # --  Sets the securityContext
 # @section -- General
+# @schema
+# additionalProperties: true
+# @schema
 securityContext: {}
 # Example:
 #   capabilities:
@@ -236,6 +254,9 @@ securityContext: {}
 
 # -- this will create your pull secret for you. Required fields are registry, username, password, and email
 # @section -- Docker configurations
+# @schema
+# additionalProperties: true
+# @schema
 dockerCredentials: {}
 # Example:
 #   registry: docker.io
@@ -339,34 +360,29 @@ preloadMLData:
 service:
   # -- If the MapLarge container is configured to serve requests on a port other than 80, define it here
   # @section -- General
+  # @schema
+  # required: true
+  # @schema
   targetPort: 80
-
-# Enables LTE ports and LoadBalancer, and specifies a MetalLB address pool to use
-# @ignore
-lte:
-  enabled: false
-  metalLbAddressPool: "default"
-  # Options Cluster or Local https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
-  # Cluster has better loadbalancing but the client IP address is hidden from app, but for LTE services it is usually
-  # more desirable to get the client's IP address
-  trafficPolicy: Local
 
 # -- Rarely there is a time when you need to set the MapLarge hostname to something other than the ingress hostname, but if you do have that scenario, you can provide a hostname here to override the value that will be derived from the ingress.hosts[0].basehostname. Note, this does not modify the ingress hostname value.
 # @section -- Ingress Configuration
 hostnameOverride:
 
-
 # Specifies an authentication plugin
+# @schema
+# additionalProperties: true
+# @schema
 authPlugin:
   # -- Determines if the authPlugin should be enabled
   # @section -- MapLarge Configuration
   enabled: false
   # -- Specifies the MapLarge authPlugin to use
   # @section -- MapLarge Configuration
-  typeName:
+  typeName: ""
   # -- Specifices the path in the container where the authPlugin configuration file can be found. Can be left blank.
   # @section -- MapLarge Configuration
-  filename:
+  filename: ""
 
 ingress:
   # -- Enable ingress object
@@ -374,26 +390,28 @@ ingress:
   enabled: true
   # -- Ingress class to use
   # @section -- Ingress Configuration
-  class: nginx-internal
+  class:
   # -- Annotations to set on the ingress object
   # @section -- Ingress Configuration
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 2000m
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+  # @schema
+  # additionalProperties: true
+  # @schema
+  annotations: {}
+  # @schema
+  # additionalProperties: true
+  # @schema
   hosts:
     # Usually you only need one host here, but this is an array field and accepts multiple values.
     # -- Custom DNS name where MapLarge can be reached
     # @section -- Ingress Configuration
-    - baseHostname: customer-a.dev.maplarge.net
+    - baseHostname:
     # -- The number of dns prefixes to create
     # @section -- Ingress Configuration
-      prefixes: 8
+      prefixes: 0
       tls:
         # -- Controls if the site is TLS protected
         # @section -- Ingress Configuration
-        enabled: true
+        enabled: false
         # -- The TLS secret to use if TLS protected
         # @section -- Ingress Configuration
-        secretName: wildcard-dev-maplarge-net-tls-secret
+        secretName: ""
