@@ -130,7 +130,7 @@ spec:
           {{- if .Values.extraEnvironmentVariables }}
           {{- (toYaml .Values.extraEnvironmentVariables | nindent 10) }}
           {{- end }}
-          {{- if .Values.notebooks.enabled }}
+          {{- if and .Values.notebooks.enabled .Values.notebooks.environmentVariables }}
           {{- (toYaml .Values.notebooks.environmentVariables | nindent 10) }}
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
