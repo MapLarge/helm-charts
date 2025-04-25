@@ -3,6 +3,17 @@ entries:
   maplarge:
   - apiVersion: v2
     appVersion: maplarge
+    created: "2025-04-25T16:13:52.156513101Z"
+    description: MapLarge Kubernetes Helm Chart
+    digest: 7a86a3a15064f4ac4a5a3993bb3b43b30c309dc25ef20983a1fd37124e3a0cb7
+    kubeVersion: '>= 1.19.0-0'
+    name: maplarge
+    type: application
+    urls:
+    - maplarge-3.2.5.tgz
+    version: 3.2.5
+  - apiVersion: v2
+    appVersion: maplarge
     created: "2025-04-24T13:00:27.903282338Z"
     description: MapLarge Kubernetes Helm Chart
     digest: 40cc1d966ae9588183af53f7c099507a9e54f6ece1c039998ed8fd3093efa13b
@@ -67,4 +78,4 @@ entries:
     urls:
     - maplarge-3.1.0.tgz
     version: 3.1.0
-generated: "2025-04-24T13:00:27.903313846Z"
+generated: "2025-04-25T16:13:52.156541995Z"
