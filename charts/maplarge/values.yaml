@@ -129,7 +129,7 @@ extraLabels: {}
 # @section -- General
 extraVolumes: []
 # Example:
-#   extraVolumes: |
+#   extraVolumes:
 #   - name: extra-config
 #     configMap:
 #       name: test-config-map
@@ -138,7 +138,7 @@ extraVolumes: []
 # @section -- General
 extraVolumeMounts: []
 # Example:
-#   extraVolumeMounts: |
+#   extraVolumeMounts:
 #   - mountPath: /maplarge/
 #     name: extra-config
 #     subPath: ml-config.extra.yaml
@@ -319,15 +319,6 @@ notebooks:
   # -- Enables MapLarge Notebooks and creates the necessary Service Account, Role and RoleBinding
   # @section -- Notebook configurations
   enabled: false
-  # -- A list of Notebook specific js.js configurations to add to the default js.js
-  # @section -- Notebook configurations
-  jsjs:
-    value: |
-      ml.config.enableProjects = true;
-      ml.config.enableNotebooks = true;
-  # -- A list of environment variables that may need to be added to MapLarge for a Notebook deployment
-  # @section -- Notebook configurations
-  environmentVariables: []
 
 ## Database preload configurations
 # -- preloadMLData.enabled Enables MapLarge to preload data from a remote docker image

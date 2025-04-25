@@ -200,13 +200,15 @@ is true or default otherwise.
 Builds the js.js based on the inputs from the values if Notebooks are enabled.
 */}}
 {{- define "maplarge.jsjs" }}
-  {{- if and (.Values.notebooks.enabled) (.Values.jsjs.value) }}
-  {{- printf "%s%s" .Values.jsjs.value  .Values.notebooks.jsjs.value }}
-  {{- else if and (.Values.notebooks.jsjs.enabled) (not .Values.jsjs.value) -}}
-  {{- printf "%s" .Values.notebooks.jsjs.value }}
-  {{- else if and (.Values.jsjs.value) (not .Values.notebooks.enabled) }}
-  {{- printf "%s" .Values.jsjs.value }}
+  {{- $jsjs := "" -}}
+  {{- $nJsjs := "" -}}
+  {{- if .Values.jsjs.value -}}
+  {{- $jsjs = cat .Values.jsjs.value "\n" }}
   {{- end }}
+  {{- if .Values.notebooks.enabled }}
+  {{- $nJsjs = "ml.config.enableNotebooks = true;"}}
+  {{- end }}
+  {{- printf "%s%s" $jsjs $nJsjs}}
 {{- end }}
 
 {{/*
