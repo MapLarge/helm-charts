@@ -4,10 +4,6 @@
 {{- $ingressName := include "maplarge.ingressName" . -}}
 {{- $loadBalancerServiceName := include "maplarge.balancerServiceName" . -}}
 {{ $policyHost := include "maplarge.hostname" . }}
-{{- $cspPolicy := "" }}
-{{- if .Values.contentSecurityPolicy.enabled }}
-{{- $cspPolicy = include "maplarge.contentSecurityPolicy" (dict "hostName" $policyHost "csp" .Values.contentSecurityPolicy) | trim -}}
-{{- end }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -19,10 +15,6 @@ metadata:
   annotations:
     {{- toYaml $annotations | nindent 4 }}
   {{- end }}
-    {{- if .Values.contentSecurityPolicy.enabled }}
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      more_set_headers {{ (printf "%s" $cspPolicy) | quote }};
-    {{- end }}
 spec:
 {{- with .Values.ingress }}
   ingressClassName: {{ .class }}

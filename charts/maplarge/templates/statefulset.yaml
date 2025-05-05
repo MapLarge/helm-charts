@@ -49,6 +49,12 @@ spec:
       {{- if $pullSecretName }}
       imagePullSecrets:
         - name: "{{ $pullSecretName }}"
+      {{- if .Values.image.extraPullSecrets -}}
+      {{- toYaml .Values.image.extraPullSecrets | nindent 8 }}
+      {{- end }}
+      {{- else if .Values.image.extraPullSecrets }}
+      imagePullSecrets:
+      {{- toYaml .Values.image.extraPullSecrets | nindent 8 }}
       {{- end }}
       {{- if .Values.podSecurityContext }}
       securityContext: {{- toYaml .Values.podSecurityContext | trim | nindent 8 }}
@@ -123,6 +129,10 @@ spec:
           {{- if .Values.authPlugin.enabled }}
           - name: ml_cfg_authPluginParams
             value: {{ printf "config=/opt/maplarge/config/%s" .Values.authPlugin.filename }}
+          {{- end }}
+          {{- if .Values.notebooks.enabled }}
+          - name: ml_cfg_externalProcessingEnabled
+            value: "True"
           {{- end }}
           {{- if .Values.environmentVariables }}
           {{- (toYaml .Values.environmentVariables | nindent 10) }}

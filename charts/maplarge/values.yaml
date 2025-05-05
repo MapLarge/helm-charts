@@ -9,6 +9,12 @@ image:
   # -- Secret to create or use to pull the docker image from the registry
   # @section -- Image Information
   pullSecretName: maplarge-dockerhub-pull-secret
+  # -- An array of any extra image pull secrets to add to the pod definition, in
+  # @section -- Image Information
+  extraPullSecrets: []
+  # Example:
+  # extraPullSecrets
+  #   - name: my-pull-secret
   # -- The fully qualified repository where the MapLarge image should be pulled from
   # @section -- Image Information
   repository: docker.io/maplarge/server-netcore-dev
@@ -23,7 +29,6 @@ license:
   # -- The content of the MapLarge license if one has been provided to you
   # @section -- License
   license:
-
 
 # -- replicas The number of replicas to create in the StatefulSet. Defaults to 1. Has no effect if horizontal pod autoscaling is enabled.
 # @section -- General
@@ -57,7 +62,6 @@ resources:
     # -- The Memory Request to set for the pod
     # @section -- Deployment Resources
     memory: 4Gi
-
 
 # -- appDataVolumeSizeInGB Requested size of PVC to be created.
 # @section -- Storage Information
@@ -240,7 +244,6 @@ dockerCredentials: {}
 #   email: dockerhub@emailaddress.com
 
 
-
 # This configuration allows the pod ten seconds to sixty minutes to become ready on startup.
 startupProbe:
   # -- Endpoint for the startup probe
@@ -394,20 +397,3 @@ ingress:
         # -- The TLS secret to use if TLS protected
         # @section -- Ingress Configuration
         secretName: wildcard-dev-maplarge-net-tls-secret
-
-#
-# -- Content Security Policy settings and overrides, if needed for an ingress object.
-# Will be processed with baseHostName to generate correct policy
-# @section -- Ingress Configuration
-contentSecurityPolicy:
-  enabled: true
-  defaultSrc: ""
-  scriptSrc: ""
-  styleSrc: ""
-  frameSrc: ""
-  frameAncestors: ""
-  imgSrc: ""
-  mediaSrc: ""
-  fontSrc: ""
-
-
