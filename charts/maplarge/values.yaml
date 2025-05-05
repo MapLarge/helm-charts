@@ -9,6 +9,12 @@ image:
   # -- Secret to create or use to pull the docker image from the registry
   # @section -- Image Information
   pullSecretName: maplarge-dockerhub-pull-secret
+  # -- An array of any additional image pull secrets to add to the pod definition, in
+  # @section -- Image Information
+  additionalPullSecrets: []
+  # Example:
+  # additionalPullSecrets
+  #   - name: my-pull-secret
   # -- The fully qualified repository where the MapLarge image should be pulled from
   # @section -- Image Information
   repository: docker.io/maplarge/server-netcore-dev
