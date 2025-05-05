@@ -49,12 +49,12 @@ spec:
       {{- if $pullSecretName }}
       imagePullSecrets:
         - name: "{{ $pullSecretName }}"
-      {{- if .Values.image.additionalPullSecrets -}}
-      {{- toYaml .Values.image.additionalPullSecrets | nindent 8 }}
+      {{- if .Values.image.extraPullSecrets -}}
+      {{- toYaml .Values.image.extraPullSecrets | nindent 8 }}
       {{- end }}
-      {{- else if .Values.image.additionalPullSecrets }}
+      {{- else if .Values.image.extraPullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.image.additionalPullSecrets | nindent 8 }}
+      {{- toYaml .Values.image.extraPullSecrets | nindent 8 }}
       {{- end }}
       {{- if .Values.podSecurityContext }}
       securityContext: {{- toYaml .Values.podSecurityContext | trim | nindent 8 }}

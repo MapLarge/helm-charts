@@ -3,5 +3,8 @@ name: maplarge
 description: MapLarge Kubernetes Helm Chart
 kubeVersion: ">= 1.19.0-0"
 type: application
-version: 3.2.5
+version: 3.3.0
 appVersion: "maplarge"
+maintainers:
+  - name: MapLarge DevOps
+    email: maplarge.devops@maplarge.com
