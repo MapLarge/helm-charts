@@ -124,6 +124,10 @@ spec:
           - name: ml_cfg_authPluginParams
             value: {{ printf "config=/opt/maplarge/config/%s" .Values.authPlugin.filename }}
           {{- end }}
+          {{ - if .Values.notebooks.enabled }}
+          - name: ml_cfg_externalProcessingEnabled
+            value: "True"
+          {{- end }}
           {{- if .Values.environmentVariables }}
           {{- (toYaml .Values.environmentVariables | nindent 10) }}
           {{- end }}
