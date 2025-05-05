@@ -395,19 +395,4 @@ ingress:
         # @section -- Ingress Configuration
         secretName: wildcard-dev-maplarge-net-tls-secret
 
-#
-# -- Content Security Policy settings and overrides, if needed for an ingress object.
-# Will be processed with baseHostName to generate correct policy
-# @section -- Ingress Configuration
-contentSecurityPolicy:
-  enabled: true
-  defaultSrc: ""
-  scriptSrc: ""
-  styleSrc: ""
-  frameSrc: ""
-  frameAncestors: ""
-  imgSrc: ""
-  mediaSrc: ""
-  fontSrc: ""
-
 
