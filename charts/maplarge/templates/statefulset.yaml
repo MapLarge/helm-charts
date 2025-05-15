@@ -256,7 +256,7 @@ spec:
                 - key: "application"
                   operator: In
                   values:
-                  - {{ include "maplarge.fullname" . | quote }}
+                  - {{ .Release.Name | quote }}
             topologyKey: "kubernetes.io/hostname"
       {{- else if .Values.preferNodeAntiAffinity }}
         podAntiAffinity:
@@ -268,7 +268,7 @@ spec:
                 - key: "application"
                   operator: In
                   values:
-                  - {{ include "maplarge.fullname" . | quote }}
+                  -{{ .Release.Name | quote }}
               topologyKey: "kubernetes.io/hostname"
       {{- end }}
       {{- end }}
