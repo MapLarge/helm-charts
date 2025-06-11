@@ -268,7 +268,7 @@ spec:
                 - key: "application"
                   operator: In
                   values:
-                  -{{ .Release.Name | quote }}
+                  - {{ .Release.Name | quote }}
               topologyKey: "kubernetes.io/hostname"
       {{- end }}
       {{- end }}
