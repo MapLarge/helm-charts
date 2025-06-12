@@ -11,7 +11,7 @@ image:
   pullPolicy: IfNotPresent
   # -- Secret to create or use to pull the docker image from the registry
   # @section -- Image Information
-  pullSecretName:
+  pullSecretName: ""
   # -- An array of any extra image pull secrets to add to the pod definition, in
   # @section -- Image Information
   extraPullSecrets: []
@@ -20,18 +20,28 @@ image:
   #   - name: my-pull-secret
   # -- The fully qualified repository where the MapLarge image should be pulled from
   # @section -- Image Information
-  repository:
+  # @schema
+  # type: string
+  # required: true
+  # example: docker.io/maplarge/maplarge
+  # @schema
+  repository: ""
   # -- The MapLarge image tag to pull
   # @section -- Image Information
+  # @schema
+  # type: string
+  # required: true
+  # example: latest
+  # @schema
   tag: ""
 
 license:
   # -- A secret name for an existing license secret. If creating your own license secret, the key must be "_maplarge_license.lic"
   # @section -- License
-  existingSecretName:
+  existingSecretName: ""
   # -- The content of the MapLarge license if one has been provided to you
   # @section -- License
-  license:
+  license: ""
 
 # -- replicas The number of replicas to create in the StatefulSet. Defaults to 1. Has no effect if horizontal pod autoscaling is enabled.
 # @section -- General
@@ -73,27 +83,37 @@ resources:
 # @section -- Storage Information
 # @schema
 # required: true
+# type: number
 # @schema
-appDataVolumeSizeInGB: 100
+appDataVolumeSizeInGB:
 
 # -- appDataVolumeStorageClassName Requested storage class name.
 # @section -- Storage Information
 # @schema
 # required: true
 # @schema
-appDataVolumeStorageClassName:
+appDataVolumeStorageClassName: ""
 
 # -- If set, the root password will be set according to this value, otherwise a default value is created
 # @section -- MapLarge Configuration
-rootPassword:
+# @schema
+# required: false
+# @schema
+rootPassword: ""
 
 # -- If set, defines the name of the secret for the root password
 # @section -- MapLarge Configuration
-rootPasswordSecretName:
+# @schema
+# required: false
+# @schema
+rootPasswordSecretName: ""
 
 # -- An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword`
 # @section -- MapLarge Configuration
-existingRootPasswordSecretName:
+# @schema
+# required: false
+# @schema
+existingRootPasswordSecretName: ""
 
 # Some MapLarge configurations can be controlled via environment variables. These
 # can be set here.
@@ -110,9 +130,13 @@ environmentVariables:
 jsjs:
   value: |
 
-# -- Allows for custom configurations for the MapLarge config.json.
+# -- Allows for custom configurations for the MapLarge config.json, set as an object of key value pairs.
 # @section -- MapLarge Configuration
-config:
+# @schema
+# type: object
+# required: false
+# @schema
+config: {}
   # Used for an InitContainer when MapLarge Notebooks are enabled.
   # This can be changed to any image desired as the initContainers
   # are only running simple shell commands
@@ -159,13 +183,15 @@ extraVolumeMounts: []
 #     name: extra-config
 #     subPath: ml-config.extra.yaml
 
-# --  JSON object used to pre-populate intercluster sync settings
+# --  JSON object used to pre-populate intercluster sync settings. Set automatically by MapLarge but available for advanced use cases.
 # @ignore
-interClusterConfigJson:
+interClusterConfigJson: ""
 
-# -- Extra configuration options for cluster.json
+# -- Extra configuration options for cluster.json set as an object of key value pairs
 # @section -- General
-clusterConfig:
+clusterConfig: {}
+# Example:
+#   foo: bar
 
 # -- useTransactionalDatabase NEED DEFINITION
 # @ignore
@@ -367,7 +393,7 @@ service:
 
 # -- Rarely there is a time when you need to set the MapLarge hostname to something other than the ingress hostname, but if you do have that scenario, you can provide a hostname here to override the value that will be derived from the ingress.hosts[0].basehostname. Note, this does not modify the ingress hostname value.
 # @section -- Ingress Configuration
-hostnameOverride:
+hostnameOverride: ""
 
 # Specifies an authentication plugin
 # @schema
@@ -380,9 +406,11 @@ authPlugin:
   # -- Specifies the MapLarge authPlugin to use
   # @section -- MapLarge Configuration
   typeName: ""
-  # -- Specifices the path in the container where the authPlugin configuration file can be found. Can be left blank.
+  # -- Specifies the path in the container where the authPlugin configuration file can be found. Can be left blank.
   # @section -- MapLarge Configuration
   filename: ""
+  # -- Specific configuration values for the selected auth plugin. Must be declared as YAML, as the chart will convert to JSON.
+  config: {}
 
 ingress:
   # -- Enable ingress object
@@ -390,7 +418,7 @@ ingress:
   enabled: true
   # -- Ingress class to use
   # @section -- Ingress Configuration
-  class:
+  class: ""
   # -- Annotations to set on the ingress object
   # @section -- Ingress Configuration
   # @schema
@@ -399,6 +427,7 @@ ingress:
   annotations: {}
   # @schema
   # additionalProperties: true
+  # type: object
   # @schema
   hosts:
     # Usually you only need one host here, but this is an array field and accepts multiple values.
