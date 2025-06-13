@@ -1,16 +1,22 @@
 name: Generate Helm documentation
 on:
   - pull_request
+  - push
+
 jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Run helm-docs
+      # Alow the action to push a commit to the branch
+      - name: Run helm-docs on commits
+        if: github.event_name != 'pull_request'
         uses: losisin/helm-docs-github-action@v1
         with:
           git-push: true
+
+      #  We don't want to commit a change back to the branch if we're in a PR state. Just fail the pipeline
+      - name: Run helm-docs on PR
+        if: github.event_name == 'pull_request'
+        uses: losisin/helm-docs-github-action@v1
