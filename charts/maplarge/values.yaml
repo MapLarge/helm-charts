@@ -8,6 +8,9 @@
 image:
   # -- Image pull policy
   # @section -- Image Information
+  # @schema
+  # enum: [Always,Never,IfNotPresent]
+  # @schema
   pullPolicy: IfNotPresent
   # -- Secret to create or use to pull the docker image from the registry
   # @section -- Image Information
@@ -35,12 +38,21 @@ image:
   # @schema
   tag: ""
 
+# @schema
+# $ref: schemas/license.json
+# @schema
 license:
   # -- A secret name for an existing license secret. If creating your own license secret, the key must be "_maplarge_license.lic"
   # @section -- License
+  # @schema
+  # required: false
+  # @schema
   existingSecretName: ""
   # -- The content of the MapLarge license if one has been provided to you
   # @section -- License
+  # @schema
+  # required: false
+  # @schema
   license: ""
 
 # -- replicas The number of replicas to create in the StatefulSet. Defaults to 1. Has no effect if horizontal pod autoscaling is enabled.
@@ -63,21 +75,19 @@ podAnnotations: {}
 
 # Limits are enforced by Kubernetes. If you exceed memory limit, your container may be killed without warning.
 # Requests must be less than or equal to limits. Usually set them equal to limits.
-resources:
-  limits:
-    # -- The CPU Limit to set for the pod
-    # @section -- Deployment Resources
-    cpu: 4
-    # -- The Memory Limit to set for the pod
-    # @section -- Deployment Resources
-    memory: 8Gi
-  requests:
-    # -- The CPU Request to set for the pod
-    # @section -- Deployment Resources
-    cpu: 1
-    # -- The Memory Request to set for the pod
-    # @section -- Deployment Resources
-    memory: 4Gi
+# -- Resources definition for the pod.
+# @section -- Deployment Resources
+# @schema
+# additionalProperties: true
+# required: false
+# @schema
+resources: {}
+  # limits:
+  #   cpu: 4
+  #   memory: 8Gi
+  # requests:
+  #   cpu: 1
+  #   memory: 4Gi
 
 # -- appDataVolumeSizeInGB Requested size of PVC to be created.
 # @section -- Storage Information
@@ -85,7 +95,7 @@ resources:
 # required: true
 # type: number
 # @schema
-appDataVolumeSizeInGB:
+appDataVolumeSizeInGB: 100
 
 # -- appDataVolumeStorageClassName Requested storage class name.
 # @section -- Storage Information
@@ -133,6 +143,7 @@ jsjs:
 # -- Allows for custom configurations for the MapLarge config.json, set as an object of key value pairs.
 # @section -- MapLarge Configuration
 # @schema
+# additionalProperties: true
 # type: object
 # required: false
 # @schema
@@ -189,6 +200,10 @@ interClusterConfigJson: ""
 
 # -- Extra configuration options for cluster.json set as an object of key value pairs
 # @section -- General
+# @schema
+# additionalProperties: true
+# required: false
+# @schema
 clusterConfig: {}
 # Example:
 #   foo: bar
@@ -223,36 +238,64 @@ terminationMessagePolicy: File
 
 # -- Sets a simple toleration for the MapLarge pod
 # @section -- General
+# @schema
+# additionalProperties: true
+# required: false
+# @schema
 simpleTolerations: []
 # Example:
 # - MapLargeReserved
 
 # -- Sets the tolerations for the MapLarge pod
 # @section -- General
+# @schema
+# additionalProperties: true
+# required: false
+# @schema
 tolerations: {}
 
 # -- Sets simple node affinity preferences for the MapLarge pod
 # @section -- General
+# @schema
+# additionalProperties: true
+# required: false
+# @schema
 simpleNodeAffinityPreferences: []
 # Example:
 # - SmallNode
 
 # --  Sets the node affinity preferences for the MapLarge pod
 # @section -- General
+# @schema
+# additionalProperties: true
+# required: false
+# @schema
 nodeAffinityPreferences: []
 
 # -- Sets the node selector for the MapLarge pod
 # @section -- General
+# @schema
+# additionalProperties: true
+# required: false
+# @schema
 nodeSelector: {}
 
 # -- Sets the simpleNodeAffinityRequirements for the pod
 # @section -- General
+# @schema
+# additionalProperties: true
+# required: false
+# @schema
 simpleNodeAffinityRequirements: []
 # Example:
 # - SpecialNode
 
 # -- Sets the nodeAffinityRequirements for the pod
 # @section -- General
+# @schema
+# additionalProperties: true
+# required: false
+# @schema
 nodeAffinityRequirements: []
 
 # --  Sets the podSecurityContext
@@ -410,6 +453,10 @@ authPlugin:
   # @section -- MapLarge Configuration
   filename: ""
   # -- Specific configuration values for the selected auth plugin. Must be declared as YAML, as the chart will convert to JSON.
+  # @schema
+  # additionalProperties: true
+  # type: object
+  # @schema
   config: {}
 
 ingress:
@@ -427,20 +474,26 @@ ingress:
   annotations: {}
   # @schema
   # additionalProperties: true
-  # type: object
+  # type: array
   # @schema
   hosts:
     # Usually you only need one host here, but this is an array field and accepts multiple values.
     # -- Custom DNS name where MapLarge can be reached
     # @section -- Ingress Configuration
-    - baseHostname:
+    - baseHostname: example.maplarge.com
     # -- The number of dns prefixes to create
     # @section -- Ingress Configuration
       prefixes: 0
       tls:
         # -- Controls if the site is TLS protected
         # @section -- Ingress Configuration
+        # @schema
+        # required: false
+        # @schema
         enabled: false
         # -- The TLS secret to use if TLS protected
         # @section -- Ingress Configuration
+        # @schema
+        # required: false
+        # @schema
         secretName: ""

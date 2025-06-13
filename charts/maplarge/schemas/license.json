@@ -1,0 +1,28 @@
+{
+  "anyOf": [
+    {
+      "required": [
+        "existingSecretName"
+      ],
+      "properties": {
+        "license": {
+          "enum": [
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "required": [
+        "license"
+      ],
+      "properties": {
+        "existingSecretName": {
+          "enum": [
+            ""
+          ]
+        }
+      }
+    }
+  ]
+}

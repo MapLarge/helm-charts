@@ -19,7 +19,7 @@ spec:
 {{- with .Values.ingress }}
   ingressClassName: {{ .class }}
 {{- range .hosts }}
-{{- if .tls.enabled }}
+{{- if and (.tls.enabled) (.tls.baseHostname )}}
   tls:
     - hosts:
         - {{ .baseHostname | quote | lower }}

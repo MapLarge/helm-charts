@@ -3,7 +3,7 @@
   "additionalProperties": false,
   "properties": {
     "appDataVolumeSizeInGB": {
-      "default": "",
+      "default": 100,
       "description": "appDataVolumeSizeInGB Requested size of PVC to be created.",
       "required": [],
       "title": "appDataVolumeSizeInGB",
@@ -20,7 +20,7 @@
       "description": "Specifies an authentication plugin",
       "properties": {
         "config": {
-          "additionalProperties": false,
+          "additionalProperties": true,
           "description": "Specific configuration values for the selected auth plugin. Must be declared as YAML, as the chart will convert to JSON.",
           "required": [],
           "title": "config",
@@ -51,20 +51,18 @@
       "required": [
         "enabled",
         "typeName",
-        "filename",
-        "config"
+        "filename"
       ],
       "title": "authPlugin"
     },
     "clusterConfig": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "description": "Extra configuration options for cluster.json set as an object of key value pairs",
       "required": [],
-      "title": "clusterConfig",
-      "type": "object"
+      "title": "clusterConfig"
     },
     "config": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "description": "Allows for custom configurations for the MapLarge config.json, set as an object of key value pairs.",
       "required": [],
       "title": "config",
@@ -190,9 +188,13 @@
         "pullPolicy": {
           "default": "IfNotPresent",
           "description": "Image pull policy",
+          "enum": [
+            "Always",
+            "Never",
+            "IfNotPresent"
+          ],
           "required": [],
-          "title": "pullPolicy",
-          "type": "string"
+          "title": "pullPolicy"
         },
         "pullSecretName": {
           "default": "",
@@ -217,7 +219,6 @@
         }
       },
       "required": [
-        "pullPolicy",
         "pullSecretName",
         "extraPullSecrets",
         "repository",
@@ -256,10 +257,10 @@
                 "additionalProperties": false,
                 "properties": {
                   "baseHostname": {
-                    "default": "",
+                    "default": "example.maplarge.com",
                     "required": [],
                     "title": "baseHostname",
-                    "type": "null"
+                    "type": "string"
                   },
                   "prefixes": {
                     "default": 0,
@@ -272,24 +273,19 @@
                     "additionalProperties": false,
                     "properties": {
                       "enabled": {
-                        "default": false,
+                        "default": "false",
                         "description": "Controls if the site is TLS protected",
                         "required": [],
-                        "title": "enabled",
-                        "type": "boolean"
+                        "title": "enabled"
                       },
                       "secretName": {
                         "default": "",
                         "description": "The TLS secret to use if TLS protected",
                         "required": [],
-                        "title": "secretName",
-                        "type": "string"
+                        "title": "secretName"
                       }
                     },
-                    "required": [
-                      "enabled",
-                      "secretName"
-                    ],
+                    "required": [],
                     "title": "tls",
                     "type": "object"
                   }
@@ -306,7 +302,7 @@
           },
           "required": [],
           "title": "hosts",
-          "type": "object"
+          "type": "array"
         }
       },
       "required": [
@@ -342,28 +338,50 @@
     },
     "license": {
       "additionalProperties": false,
+      "anyOf": [
+        {
+          "properties": {
+            "license": {
+              "enum": [
+                ""
+              ],
+              "required": []
+            }
+          },
+          "required": [
+            "existingSecretName"
+          ]
+        },
+        {
+          "properties": {
+            "existingSecretName": {
+              "enum": [
+                ""
+              ],
+              "required": []
+            }
+          },
+          "required": [
+            "license"
+          ]
+        }
+      ],
       "properties": {
         "existingSecretName": {
           "default": "",
           "description": "A secret name for an existing license secret. If creating your own license secret, the key must be \"_maplarge_license.lic\"",
           "required": [],
-          "title": "existingSecretName",
-          "type": "string"
+          "title": "existingSecretName"
         },
         "license": {
           "default": "",
           "description": "The content of the MapLarge license if one has been provided to you",
           "required": [],
-          "title": "license",
-          "type": "string"
+          "title": "license"
         }
       },
-      "required": [
-        "existingSecretName",
-        "license"
-      ],
-      "title": "license",
-      "type": "object"
+      "required": [],
+      "title": "license"
     },
     "livenessProbe": {
       "additionalProperties": false,
@@ -449,29 +467,28 @@
       "type": "object"
     },
     "nodeAffinityPreferences": {
+      "additionalProperties": true,
       "description": " Sets the node affinity preferences for the MapLarge pod",
       "items": {
         "required": []
       },
       "required": [],
-      "title": "nodeAffinityPreferences",
-      "type": "array"
+      "title": "nodeAffinityPreferences"
     },
     "nodeAffinityRequirements": {
+      "additionalProperties": true,
       "description": "Sets the nodeAffinityRequirements for the pod",
       "items": {
         "required": []
       },
       "required": [],
-      "title": "nodeAffinityRequirements",
-      "type": "array"
+      "title": "nodeAffinityRequirements"
     },
     "nodeSelector": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "description": "Sets the node selector for the MapLarge pod",
       "required": [],
-      "title": "nodeSelector",
-      "type": "object"
+      "title": "nodeSelector"
     },
     "notebooks": {
       "additionalProperties": false,
@@ -669,66 +686,10 @@
       "type": "boolean"
     },
     "resources": {
-      "additionalProperties": false,
-      "description": "Limits are enforced by Kubernetes. If you exceed memory limit, your container may be killed without warning.\nRequests must be less than or equal to limits. Usually set them equal to limits.",
-      "properties": {
-        "limits": {
-          "additionalProperties": false,
-          "properties": {
-            "cpu": {
-              "default": 4,
-              "description": "The CPU Limit to set for the pod",
-              "required": [],
-              "title": "cpu",
-              "type": "integer"
-            },
-            "memory": {
-              "default": "8Gi",
-              "description": "The Memory Limit to set for the pod",
-              "required": [],
-              "title": "memory",
-              "type": "string"
-            }
-          },
-          "required": [
-            "cpu",
-            "memory"
-          ],
-          "title": "limits",
-          "type": "object"
-        },
-        "requests": {
-          "additionalProperties": false,
-          "properties": {
-            "cpu": {
-              "default": 1,
-              "description": "The CPU Request to set for the pod",
-              "required": [],
-              "title": "cpu",
-              "type": "integer"
-            },
-            "memory": {
-              "default": "4Gi",
-              "description": "The Memory Request to set for the pod",
-              "required": [],
-              "title": "memory",
-              "type": "string"
-            }
-          },
-          "required": [
-            "cpu",
-            "memory"
-          ],
-          "title": "requests",
-          "type": "object"
-        }
-      },
-      "required": [
-        "limits",
-        "requests"
-      ],
-      "title": "resources",
-      "type": "object"
+      "additionalProperties": true,
+      "description": "Limits are enforced by Kubernetes. If you exceed memory limit, your container may be killed without warning.\nRequests must be less than or equal to limits. Usually set them equal to limits.\nResources definition for the pod.",
+      "required": [],
+      "title": "resources"
     },
     "revisionHistoryLimit": {
       "default": 10,
@@ -797,31 +758,31 @@
       "type": "object"
     },
     "simpleNodeAffinityPreferences": {
+      "additionalProperties": true,
       "description": "Sets simple node affinity preferences for the MapLarge pod",
       "items": {
         "required": []
       },
       "required": [],
-      "title": "simpleNodeAffinityPreferences",
-      "type": "array"
+      "title": "simpleNodeAffinityPreferences"
     },
     "simpleNodeAffinityRequirements": {
+      "additionalProperties": true,
       "description": "Sets the simpleNodeAffinityRequirements for the pod",
       "items": {
         "required": []
       },
       "required": [],
-      "title": "simpleNodeAffinityRequirements",
-      "type": "array"
+      "title": "simpleNodeAffinityRequirements"
     },
     "simpleTolerations": {
+      "additionalProperties": true,
       "description": "Sets a simple toleration for the MapLarge pod",
       "items": {
         "required": []
       },
       "required": [],
-      "title": "simpleTolerations",
-      "type": "array"
+      "title": "simpleTolerations"
     },
     "startupProbe": {
       "additionalProperties": false,
@@ -905,11 +866,10 @@
       "type": "string"
     },
     "tolerations": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "description": "Sets the tolerations for the MapLarge pod",
       "required": [],
-      "title": "tolerations",
-      "type": "object"
+      "title": "tolerations"
     },
     "updateStrategyType": {
       "default": "RollingUpdate",
@@ -928,11 +888,9 @@
   },
   "required": [
     "image",
-    "license",
     "replicas",
     "persistConfiguration",
     "podAnnotations",
-    "resources",
     "appDataVolumeSizeInGB",
     "appDataVolumeStorageClassName",
     "environmentVariables",
@@ -944,7 +902,6 @@
     "extraVolumes",
     "extraVolumeMounts",
     "interClusterConfigJson",
-    "clusterConfig",
     "useTransactionalDatabase",
     "updateStrategyType",
     "podManagementPolicy",
@@ -952,13 +909,6 @@
     "terminationGracePeriodSeconds",
     "terminationMessagePath",
     "terminationMessagePolicy",
-    "simpleTolerations",
-    "tolerations",
-    "simpleNodeAffinityPreferences",
-    "nodeAffinityPreferences",
-    "nodeSelector",
-    "simpleNodeAffinityRequirements",
-    "nodeAffinityRequirements",
     "startupProbe",
     "livenessProbe",
     "readinessProbe",
