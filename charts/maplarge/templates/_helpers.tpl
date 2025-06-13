@@ -50,11 +50,6 @@ Labels that will be applied to every single object
 helm.sh/chart: {{ include "maplarge.chart" . }}
 {{ include "maplarge.selectorLabels" . }}
 app.kubernetes.io/version: {{ include "maplarge.image" . }}
-{{- if .Values.team }}
-maplarge.com/project: {{ .Values.team | quote }}
-team: {{ .Values.team | quote }}
-app.kubernetes.io/owner: {{ .Values.team | quote }}
-{{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- range $key, $value := .Values.extraLabels }}
 {{ $key }}: {{ $value | quote }}

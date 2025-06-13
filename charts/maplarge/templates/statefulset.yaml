@@ -37,9 +37,6 @@ spec:
     {{- end }}
       labels:
         {{- include "maplarge.labels" . | nindent 8 }}
-        {{- if .Values.team }}
-        maplarge.com/project: {{ .Values.team | quote }}
-        {{- end }}
         application: {{ .Release.Name | quote }}
         app.kubernetes.io/name: {{ .Release.Name | quote }}
         app.kubernetes.io/component: maplarge-api-server
@@ -146,12 +143,6 @@ spec:
             - containerPort: {{ default "80" .Values.service.targetPort }}
               protocol: TCP
               name: http
-          {{- if .Values.lte.enabled }}
-            - containerPort: 50595
-              protocol: TCP
-            - containerPort: 50597
-              protocol: TCP
-          {{- end }}
           {{- if .Values.startupProbe }}
           startupProbe:
           {{- toYaml .Values.startupProbe | nindent 12 }}
