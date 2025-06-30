@@ -356,6 +356,36 @@ lte:
 hostnameOverride:
 
 
+# -- Configuration for Prometheus ServiceMonitor
+# @section -- Monitoring Configuration
+serviceMonitor:
+  # -- Enable ServiceMonitor resource for Prometheus
+  # @section -- Monitoring Configuration
+  enabled: false
+  # -- Additional labels to add to the ServiceMonitor
+  # @section -- Monitoring Configuration
+  additionalLabels: {}
+  # -- Namespace to deploy the ServiceMonitor. If not set, it will be deployed in the same namespace as the chart
+  # @section -- Monitoring Configuration
+  namespace: ""
+  # -- Interval at which metrics should be scraped
+  # @section -- Monitoring Configuration
+  interval: 30s
+  # -- Timeout after which the scrape is ended
+  # @section -- Monitoring Configuration
+  scrapeTimeout: 10s
+  # -- MetricRelabelConfigs to apply to samples before ingestion
+  # @section -- Monitoring Configuration
+  metricRelabelings: []
+  # -- RelabelConfigs to apply to samples before scraping
+  # @section -- Monitoring Configuration
+  relabelings: []
+  # -- Endpoints to be scraped by Prometheus
+  # @section -- Monitoring Configuration
+  endpoints:
+    - port: http
+      path: /restapi/v1/apps/ml-prometheus/metrics
+
 # Specifies an authentication plugin
 authPlugin:
   # -- Determines if the authPlugin should be enabled
