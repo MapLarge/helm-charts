@@ -175,7 +175,7 @@ Contents of `cluster.json` file, typically located either in `/opt/maplarge/App_
   {{- end }}
   {{- $clusterConfig := (dict "DefaultSelfAddress" $defaultSelfAddress "DefaultClusterName" $defaultClusterName "AutoJoinCoreClusterMembers" $autoJoinMembers ) }}
   {{- $mergedClusterConfig := merge $clusterConfigToMerge $clusterConfig }}
-  {{- $clusterConfigJson := toJson $mergedClusterConfig }}
+  {{- $clusterConfigJson := toPrettyJson $mergedClusterConfig }}
   {{- $clusterConfigJson }}
 {{- end }}
 
