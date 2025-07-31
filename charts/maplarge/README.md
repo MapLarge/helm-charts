@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 3.3.3](https://img.shields.io/badge/Version-3.3.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
+![Version: 3.3.4](https://img.shields.io/badge/Version-3.3.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
 
 ## Additional Information
 
@@ -49,7 +49,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | authPlugin.enabled | bool | `false` | Determines if the authPlugin should be enabled |
 | authPlugin.filename | string | `nil` | Specifices the path in the container where the authPlugin configuration file can be found. Can be left blank. |
 | authPlugin.typeName | string | `nil` | Specifies the MapLarge authPlugin to use |
-| config | string | `nil` | Allows for custom configurations for the MapLarge config.json. |
+| config | object | `nil` | Allows for custom configurations for the MapLarge config.json. |
 | environmentVariables | list | `[{"name":"ML_STDERR_LOG_LEVEL","value":"2"},{"name":"ml_cfg_homepageRedirect","value":"dashboard"}]` | A map of extra environment variables to be added to the MapLarge container |
 | existingRootPasswordSecretName | string | `nil` | An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword` |
 | jsjs | object | `{"value":""}` | Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line. |
@@ -60,7 +60,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| clusterConfig | string | `nil` | Extra configuration options for cluster.json |
+| clusterConfig | object | `nil` | Extra configuration options for cluster.json |
 | extraLabels | map | `{}` | extraLabels Extra labels to apply to all resources |
 | extraVolumeMounts | list | `[]` | extraVolumeMounts Specify any extra list of additional volumeMounts for MapLarge |
 | extraVolumes | list | `[]` | extraVolumes Specify any extra list of additional volumes for MapLarge |

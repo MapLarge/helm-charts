@@ -98,7 +98,7 @@ environmentVariables:
 jsjs:
   value: |
 
-# -- Allows for custom configurations for the MapLarge config.json.
+# -- (object) Allows for custom configurations for the MapLarge config.json.
 # @section -- MapLarge Configuration
 config:
   # Used for an InitContainer when MapLarge Notebooks are enabled.
@@ -151,7 +151,7 @@ extraVolumeMounts: []
 # @ignore
 interClusterConfigJson:
 
-# -- Extra configuration options for cluster.json
+# -- (object) Extra configuration options for cluster.json
 # @section -- General
 clusterConfig:
 

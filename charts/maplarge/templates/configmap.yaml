@@ -8,10 +8,10 @@ apiVersion: v1
 data:
   cluster.json: {{ $clusterConfigJson | quote }}
   {{- if .Values.config }}
-  config.json: {{ toJson .Values.config | quote  }}
+  config.json: {{ toPrettyJson .Values.config | quote  }}
   {{- end }}
   {{- if .Values.authPlugin.enabled }}
-  {{ .Values.authPlugin.filename }}: {{ toJson .Values.authPlugin.config | quote }}
+  {{ .Values.authPlugin.filename }}: {{ toPrettyJson .Values.authPlugin.config | quote }}
   {{- end }}
   {{- if or .Values.jsjs.value .Values.notebooks.enabled }}
   js.js: {{ include "maplarge.jsjs" .  | quote }}
