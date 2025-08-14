@@ -148,4 +148,15 @@ entries:
     urls:
     - maplarge-3.1.0.tgz
     version: 3.1.0
-generated: "2025-07-31T18:57:05.128943763Z"
+  - apiVersion: v2
+    appVersion: maplarge
+    created: "2025-08-14T11:44:41.285549-04:00"
+    description: MapLarge Kubernetes Helm Chart
+    digest: 8713d5f60fca55947969f8343cfd3c985fe29cabf40009d73b0c219c7713162f
+    kubeVersion: '>= 1.19.0-0'
+    name: maplarge
+    type: application
+    urls:
+    - maplarge-2.2.0.tgz
+    version: 2.2.0
+generated: "2025-08-14T11:44:41.283542-04:00"
