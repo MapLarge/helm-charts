@@ -7,6 +7,10 @@ metadata:
   labels:
     application: {{ .Release.Name | quote }}
     {{- include "maplarge.labels" . | nindent 4 }}
+  {{- with .Values.license.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
 type: Opaque
 data:
   _maplarge_license.lic: {{ .Values.license.license | b64enc | quote }}

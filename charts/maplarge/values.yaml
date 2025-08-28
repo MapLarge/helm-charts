@@ -25,10 +25,13 @@ image:
 license:
   # -- A secret name for an existing license secret. If creating your own license secret, the key must be "_maplarge_license.lic"
   # @section -- License
-  existingSecretName:
+  existingSecretName: ""
   # -- The content of the MapLarge license if one has been provided to you
   # @section -- License
-  license:
+  license: ""
+  # -- Annotations to set on the license secret
+  # @section -- License
+  annotations: {}
 
 # -- replicas The number of replicas to create in the StatefulSet. Defaults to 1. Has no effect if horizontal pod autoscaling is enabled.
 # @section -- General
@@ -113,6 +116,10 @@ serviceAccount:
   # -- To use an existing service account, provide the name here. If not set and create is true, a name is generated using the maplarge.name template.
   # @section -- General
   name: ""
+  # -- Specifies Service Account specific Annotations
+  # @section -- General
+  annotations: {}
+
 
 # -- Set to true if you want to prefer that your replicas are placed on distinct nodes.
 # @section -- General
@@ -340,6 +347,9 @@ service:
   # -- If the MapLarge container is configured to serve requests on a port other than 80, define it here
   # @section -- General
   targetPort: 80
+  # -- Annotations to be added to the Service Object
+  # @section -- General
+  annotations: {}
 
 # Enables LTE ports and LoadBalancer, and specifies a MetalLB address pool to use
 # @ignore
