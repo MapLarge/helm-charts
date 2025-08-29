@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 3.3.4](https://img.shields.io/badge/Version-3.3.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
+![Version: 3.3.5](https://img.shields.io/badge/Version-3.3.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
 
 ## Additional Information
 
@@ -73,7 +73,9 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | replicas | int | `3` | replicas The number of replicas to create in the StatefulSet. Defaults to 1. Has no effect if horizontal pod autoscaling is enabled. |
 | requireNodeAntiAffinity | bool | `true` | Set to true if you want to REQUIRE that your replicas are placed on different nodes. |
 | securityContext | object | `{}` | Sets the securityContext |
+| service.annotations | object | `{}` | Annotations to be added to the Service Object |
 | service.targetPort | int | `80` | If the MapLarge container is configured to serve requests on a port other than 80, define it here |
+| serviceAccount.annotations | object | `{}` | Specifies Service Account specific Annotations |
 | serviceAccount.create | bool | `false` | Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false. |
 | serviceAccount.name | string | `""` | To use an existing service account, provide the name here. If not set and create is true, a name is generated using the maplarge.name template. |
 | simpleNodeAffinityPreferences | list | `[]` | Sets simple node affinity preferences for the MapLarge pod |
@@ -114,8 +116,9 @@ $ helm install maplarge maplarge -f custom.values.yaml
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| license.existingSecretName | string | `nil` | A secret name for an existing license secret. If creating your own license secret, the key must be "_maplarge_license.lic" |
-| license.license | string | `nil` | The content of the MapLarge license if one has been provided to you |
+| license.annotations | object | `{}` | Annotations to set on the license secret |
+| license.existingSecretName | string | `""` | A secret name for an existing license secret. If creating your own license secret, the key must be "_maplarge_license.lic" |
+| license.license | string | `""` | The content of the MapLarge license if one has been provided to you |
 
 ### Probe Configurations
 

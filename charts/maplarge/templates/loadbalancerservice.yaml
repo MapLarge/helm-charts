@@ -8,6 +8,10 @@ metadata:
     app.kubernetes.io/part-of: {{ include "maplarge.name" . }}
     application: {{ .Release.Name | quote }}
     {{- include "maplarge.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   type: "ClusterIP"
   sessionAffinity: None
