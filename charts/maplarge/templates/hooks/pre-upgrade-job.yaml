@@ -4,7 +4,7 @@ metadata:
   name: {{ include "maplarge.name" . }}-version-check
   annotations:
     "helm.sh/hook": pre-upgrade
-    "helm.sh/hook-delete-policy": before-hook-creation
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     "helm.sh/hook-weight": "0"
 spec:
   backoffLimit: 0
