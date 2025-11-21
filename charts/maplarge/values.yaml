@@ -407,3 +407,15 @@ ingress:
         # -- The TLS secret to use if TLS protected
         # @section -- Ingress Configuration
         secretName: wildcard-dev-maplarge-net-tls-secret
+
+hooks:
+  # -- Enables pre-upgrade hook to prevent downgrades
+  # @section -- Hooks
+  preUpgradeHook:
+    image:
+      # -- The image repository to use for the pre-upgrade hook job
+      # @section -- Hooks
+      repository: bitnami/kubectl
+      # -- The image tag to use for the pre-upgrade hook job
+      # @section -- Hooks
+      tag: latest
