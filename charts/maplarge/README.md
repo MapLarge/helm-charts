@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 3.3.5](https://img.shields.io/badge/Version-3.3.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
+![Version: 3.4.0](https://img.shields.io/badge/Version-3.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
 
 ## Additional Information
 
@@ -88,6 +88,14 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | dockerCredentials | object | `{}` | this will create your pull secret for you. Required fields are registry, username, password, and email |
+
+### Hooks
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| hooks.preUpgradeHook | object | `{"image":{"repository":"bitnami/kubectl","tag":"latest"}}` | Enables pre-upgrade hook to prevent downgrades |
+| hooks.preUpgradeHook.image.repository | string | `"bitnami/kubectl"` | The image repository to use for the pre-upgrade hook job |
+| hooks.preUpgradeHook.image.tag | string | `"latest"` | The image tag to use for the pre-upgrade hook job |
 
 ### Ingress Configuration
 
