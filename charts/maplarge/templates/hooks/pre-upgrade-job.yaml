@@ -1,3 +1,4 @@
+{{- if gt .Values.replicas 1}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -101,3 +102,4 @@ spec:
               else
                   echo "Build IDs match ($OLD_BUILD). Standard rolling update is safe."
               fi
+{{- end }}
