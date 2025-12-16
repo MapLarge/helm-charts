@@ -1,3 +1,4 @@
+{{- if gt (.Values.replicas | int) 1}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -15,6 +16,23 @@ spec:
         - name: {{ .Values.image.pullSecretName }}
       {{- if .Values.image.extraPullSecrets -}}
       {{- toYaml .Values.image.extraPullSecrets | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or (.Values.tolerations) (.Values.simpleTolerations) }}
+      tolerations:
+      {{- if .Values.tolerations }}
+      {{- with .Values.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      {{- else }}
+      {{- range .Values.simpleTolerations }}
+        - key: {{ . | quote }}
+          operator: "Exists"
+      {{- end }}
       {{- end }}
       {{- end }}
       serviceAccountName: {{ include "maplarge.name" . }}-update-hook
@@ -101,3 +119,4 @@ spec:
               else
                   echo "Build IDs match ($OLD_BUILD). Standard rolling update is safe."
               fi
+{{- end }}
