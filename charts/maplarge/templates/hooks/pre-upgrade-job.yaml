@@ -18,6 +18,23 @@ spec:
       {{- toYaml .Values.image.extraPullSecrets | nindent 8 }}
       {{- end }}
       {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or (.Values.tolerations) (.Values.simpleTolerations) }}
+      tolerations:
+      {{- if .Values.tolerations }}
+      {{- with .Values.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      {{- else }}
+      {{- range .Values.simpleTolerations }}
+        - key: {{ . | quote }}
+          operator: "Exists"
+      {{- end }}
+      {{- end }}
+      {{- end }}
       serviceAccountName: {{ include "maplarge.name" . }}-update-hook
       restartPolicy: Never
       volumes:
