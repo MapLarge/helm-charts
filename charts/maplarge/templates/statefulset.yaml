@@ -37,9 +37,6 @@ spec:
     {{- end }}
       labels:
         {{- include "maplarge.labels" . | nindent 8 }}
-        {{- if .Values.team }}
-        maplarge.com/project: {{ .Values.team | quote }}
-        {{- end }}
         application: {{ .Release.Name | quote }}
         app.kubernetes.io/name: {{ .Release.Name | quote }}
         app.kubernetes.io/component: maplarge-api-server
