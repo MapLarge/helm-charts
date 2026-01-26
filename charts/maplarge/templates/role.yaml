@@ -32,4 +32,12 @@ rules:
       - pods
       - pods/exec
       - pods/attach
+  - verbs:
+      - create
+      - delete
+      - deletecollection
+      - patch
+      - update
+    apiGroups: ["batch"]
+    resources: ["jobs"]
 {{- end -}}
