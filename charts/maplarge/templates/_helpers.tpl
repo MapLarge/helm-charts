@@ -1,5 +1,8 @@
 {{/* vim: set filetype=mustache: */}}
 
+{{/*
+Helper function to modify a passed in string to a valid DNS domain segment (required for many Kubernetes fields, including label values)
+*/}}
 {{- define "dnsSafeTruncate" -}}
 {{- print . | replace "+" "_" | trunc 63 | trimSuffix "-" | trimSuffix "_" | trimSuffix "." }}
 {{- end}}
