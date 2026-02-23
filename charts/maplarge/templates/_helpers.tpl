@@ -5,7 +5,7 @@ This is the "name" of the Chart that is used by other templates in this chart to
 */}}
 
 {{- define "maplarge.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" | trimSuffix "." }}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" | trimSuffix "_" | trimSuffix "." }}
 {{- end }}
 
 {{/*
@@ -16,13 +16,13 @@ If release name contains chart name it will be used as a full name.
 
 {{- define "maplarge.fullname" -}}
   {{- if .Values.fullnameOverride }}
-    {{- .Values.fullnameOverride | trunc 52 | trimSuffix "-" | trimSuffix "." | lower }}
+    {{- .Values.fullnameOverride | trunc 52 | trimSuffix "-" | trimSuffix "_" | trimSuffix "." | lower }}
   {{- else }}
     {{- $name := default .Chart.Name .Values.nameOverride }}
     {{- if contains $name .Release.Name }}
-      {{- .Release.Name | trunc 52 | trimSuffix "-"  | trimSuffix "." | lower }}
+      {{- .Release.Name | trunc 52 | trimSuffix "-"  | trimSuffix "_" | trimSuffix "." | lower }}
     {{- else }}
-      {{- printf "%s-%s" .Release.Name $name | trunc 52 | trimSuffix "-" | trimSuffix "." | lower }}
+      {{- printf "%s-%s" .Release.Name $name | trunc 52 | trimSuffix "-" | trimSuffix "_" | trimSuffix "." | lower }}
     {{- end }}
   {{- end }}
 {{- end }}
@@ -32,7 +32,7 @@ Create chart name and version as used by the chart label.
 */}}
 
 {{- define "maplarge.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" | trimSuffix "." }}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" | trimSuffix "_" | trimSuffix "." }}
 {{- end }}
 
 {{/*
@@ -40,7 +40,7 @@ The tag for MapLarge API Server
 */}}
 
 {{- define "maplarge.image" -}}
-{{- default "4.5.0" .Values.image.tag | trunc 63 | trimSuffix "-" | trimSuffix "." }}
+{{- default "4.5.0" .Values.image.tag | trunc 63 | trimSuffix "-" | trimSuffix "_" | trimSuffix "." }}
 {{- end }}
 
 {{/*
@@ -70,7 +70,7 @@ Removed app name from selector labels because now the app name is not going to b
 */}}
 
 {{- define "maplarge.selectorLabels" -}}
-  app.kubernetes.io/instance: {{ .Release.Name | trimSuffix "-" | trimSuffix "." }}
+  app.kubernetes.io/instance: {{ .Release.Name | trimSuffix "-" | trimSuffix "_" | trimSuffix "." }}
 {{- end }}
 
 {{/*
@@ -115,7 +115,7 @@ Max length for a DNS subdomain name is 253
 {{- $name := "" -}}
 {{- if gt $totalLen 253 -}}
   {{- $toTrunc := sub $fullnameLen $balencerLen | int -}}
-  {{- $name = include "maplarge.fullname" . | trunc $toTrunc | trimSuffix "-" | trimSuffix "." -}}
+  {{- $name = include "maplarge.fullname" . | trunc $toTrunc | trimSuffix "-" | trimSuffix "_" | trimSuffix "." -}}
 {{- else -}}
   {{- $name = include "maplarge.fullname" . -}}
 {{- end -}}
