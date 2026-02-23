@@ -1,11 +1,17 @@
 {{/* vim: set filetype=mustache: */}}
 
 {{/*
+Helper function to modify a passed in string to a valid DNS domain segment (required for many Kubernetes fields, including label values)
+*/}}
+{{- define "dnsSafeTruncate" -}}
+{{- print . | replace "+" "_" | trunc 63 | trimSuffix "-" | trimSuffix "_" | trimSuffix "." }}
+{{- end}}
+
+{{/*
 This is the "name" of the Chart that is used by other templates in this chart to form a qualified name for the application. By default, this is the name of the Chart; can be overriden via `.Values.nameOverride`
 */}}
-
 {{- define "maplarge.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" | trimSuffix "." }}
+{{- include "dnsSafeTruncate" (default .Chart.Name .Values.nameOverride ) }}
 {{- end }}
 
 {{/*
@@ -16,13 +22,13 @@ If release name contains chart name it will be used as a full name.
 
 {{- define "maplarge.fullname" -}}
   {{- if .Values.fullnameOverride }}
-    {{- .Values.fullnameOverride | trunc 52 | trimSuffix "-" | trimSuffix "." | lower }}
+    {{- include "dnsSafeTruncate" (.Values.fullnameOverride | trunc 52 | lower) }}
   {{- else }}
     {{- $name := default .Chart.Name .Values.nameOverride }}
     {{- if contains $name .Release.Name }}
-      {{- .Release.Name | trunc 52 | trimSuffix "-"  | trimSuffix "." | lower }}
+      {{- include "dnsSafeTruncate" (.Release.Name | trunc 52 | lower) }}
     {{- else }}
-      {{- printf "%s-%s" .Release.Name $name | trunc 52 | trimSuffix "-" | trimSuffix "." | lower }}
+      {{- include "dnsSafeTruncate" (printf "%s-%s" .Release.Name $name | trunc 52 | lower) }}
     {{- end }}
   {{- end }}
 {{- end }}
@@ -30,9 +36,8 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-
 {{- define "maplarge.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" | trimSuffix "." }}
+{{- include "dnsSafeTruncate" (printf "%s-%s" .Chart.Name .Chart.Version) }}
 {{- end }}
 
 {{/*
@@ -40,7 +45,7 @@ The tag for MapLarge API Server
 */}}
 
 {{- define "maplarge.image" -}}
-{{- default "4.5.0" .Values.image.tag | trunc 63 | trimSuffix "-" | trimSuffix "." }}
+{{- include "dnsSafeTruncate" (default "4.5.0" .Values.image.tag) }}
 {{- end }}
 
 {{/*
@@ -70,7 +75,7 @@ Removed app name from selector labels because now the app name is not going to b
 */}}
 
 {{- define "maplarge.selectorLabels" -}}
-  app.kubernetes.io/instance: {{ .Release.Name | trimSuffix "-" | trimSuffix "." }}
+  app.kubernetes.io/instance: {{ include "dnsSafeTruncate" (.Release.Name) }}
 {{- end }}
 
 {{/*
@@ -115,7 +120,7 @@ Max length for a DNS subdomain name is 253
 {{- $name := "" -}}
 {{- if gt $totalLen 253 -}}
   {{- $toTrunc := sub $fullnameLen $balencerLen | int -}}
-  {{- $name = include "maplarge.fullname" . | trunc $toTrunc | trimSuffix "-" | trimSuffix "." -}}
+  {{- $name = include "dnsSafeTruncate" (include "maplarge.fullname" . | trunc $toTrunc ) -}}
 {{- else -}}
   {{- $name = include "maplarge.fullname" . -}}
 {{- end -}}
