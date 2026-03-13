@@ -1,16 +1,23 @@
 name: Generate Helm documentation
 on:
-  - pull_request
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
 jobs:
   generate:
+    # Only run on same-repo PRs (forks get read-only tokens and cannot push)
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Run helm-docs
-        uses: losisin/helm-docs-github-action@v1
+        uses: losisin/helm-docs-github-action@6f957579ac122ecc167bf515fe84e828686c9a15 # v1.7.1
         with:
           git-push: true
