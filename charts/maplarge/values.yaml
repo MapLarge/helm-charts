@@ -382,16 +382,16 @@ ingress:
   # -- Enable ingress object
   # @section -- Ingress Configuration
   enabled: true
-  # -- Ingress class to use
+  # -- Ingress class to use. If not set, no ingressClassName will be set on the resource.
   # @section -- Ingress Configuration
-  class: nginx-internal
-  # -- Annotations to set on the ingress object
+  class: ""
+  # -- Path type for ingress rules. One of Prefix, Exact, or ImplementationSpecific.
   # @section -- Ingress Configuration
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 2000m
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+  pathType: Prefix
+  # -- Annotations to set on the ingress object. No annotations are set by default;
+  # add any ingress controller-specific annotations here as needed.
+  # @section -- Ingress Configuration
+  annotations: {}
   hosts:
     # Usually you only need one host here, but this is an array field and accepts multiple values.
     # -- Custom DNS name where MapLarge can be reached

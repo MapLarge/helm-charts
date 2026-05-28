@@ -3,6 +3,7 @@
 {{- $fullName := include "maplarge.fullname" . -}}
 {{- $ingressName := include "maplarge.ingressName" . -}}
 {{- $loadBalancerServiceName := include "maplarge.balancerServiceName" . -}}
+{{- $pathType := .Values.ingress.pathType | default "Prefix" -}}
 {{ $policyHost := include "maplarge.hostname" . }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -17,7 +18,9 @@ metadata:
   {{- end }}
 spec:
 {{- with .Values.ingress }}
+  {{- if .class }}
   ingressClassName: {{ .class }}
+  {{- end }}
 {{- range .hosts }}
 {{- if .tls.enabled }}
   tls:
@@ -38,7 +41,7 @@ spec:
       http:
         paths:
           - path: /
-            pathType: Prefix
+            pathType: {{ $pathType }}
             backend:
               service:
                 name: {{ $loadBalancerServiceName }}
@@ -50,7 +53,7 @@ spec:
       http:
         paths:
           - path: /
-            pathType: Prefix
+            pathType: {{ $pathType }}
             backend:
               service:
                 name: {{ $loadBalancerServiceName }}
