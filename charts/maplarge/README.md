@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 3.5.1](https://img.shields.io/badge/Version-3.5.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
+![Version: 3.5.2](https://img.shields.io/badge/Version-3.5.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
 
 ## Additional Information
 
@@ -102,8 +102,8 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | hostnameOverride | string | `nil` | Rarely there is a time when you need to set the MapLarge hostname to something other than the ingress hostname, but if you do have that scenario, you can provide a hostname here to override the value that will be derived from the ingress.hosts[0].basehostname. Note, this does not modify the ingress hostname value. |
-| ingress.annotations | object | `{"nginx.ingress.kubernetes.io/proxy-body-size":"2000m","nginx.ingress.kubernetes.io/proxy-connect-timeout":"30","nginx.ingress.kubernetes.io/proxy-read-timeout":"600","nginx.ingress.kubernetes.io/proxy-send-timeout":"600"}` | Annotations to set on the ingress object |
-| ingress.class | string | `"nginx-internal"` | Ingress class to use |
+| ingress.annotations | object | `{}` | Annotations to set on the ingress object. No annotations are set by default; add any ingress controller-specific annotations here as needed. |
+| ingress.class | string | `""` | Ingress class to use. If not set, no ingressClassName will be set on the resource. |
 | ingress.enabled | bool | `true` | Enable ingress object |
 | ingress.hosts[0] | object | `{"baseHostname":"customer-a.dev.maplarge.net","prefixes":8,"tls":{"enabled":true,"secretName":"wildcard-dev-maplarge-net-tls-secret"}}` | Custom DNS name where MapLarge can be reached |
 | ingress.hosts[0].prefixes | int | `8` | The number of dns prefixes to create |

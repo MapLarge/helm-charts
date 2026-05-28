@@ -17,7 +17,9 @@ metadata:
   {{- end }}
 spec:
 {{- with .Values.ingress }}
+  {{- if .class }}
   ingressClassName: {{ .class }}
+  {{- end }}
 {{- range .hosts }}
 {{- if .tls.enabled }}
   tls:
