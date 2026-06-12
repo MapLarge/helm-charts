@@ -416,3 +416,45 @@ hooks:
       # -- The image tag to use for the pre-upgrade hook job
       # @section -- Hooks
       tag: latest
+
+# extraObjects could be utilized to add dynamic manifests via values
+extraObjects: []
+# Examples:
+# extraObjects:
+# - apiVersion: external-secrets.io/v1
+#   kind: ExternalSecret
+#   metadata:
+#     name: maplarge-root-password
+#     annotations:
+#   spec:
+#     refreshInterval: 1h
+#     secretStoreRef:
+#       name: onepassword
+#       kind: ClusterSecretStore
+#     target:
+#       name: maplarge-root-password
+#     data:
+#       - secretKey: rootPassword
+#         remoteRef:
+#           key: 'MapLarge Root Password'
+#           property: password
+# Alternatively, you can use strings, which lets you use additional templating features:
+# extraObjects:
+# - |
+#   apiVersion: external-secrets.io/v1
+#   kind: ExternalSecret
+#   metadata:
+#     name: maplarge-root-password
+#     annotations:
+#   spec:
+#     refreshInterval: 1h
+#     secretStoreRef:
+#       name: onepassword
+#       kind: ClusterSecretStore
+#     target:
+#       name: {{ include "some-other-template" }}
+#     data:
+#       - secretKey: rootPassword
+#         remoteRef:
+#           key: 'MapLarge Root Password'
+#           property: password
