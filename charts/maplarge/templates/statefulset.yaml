@@ -15,12 +15,7 @@ metadata:
     app.kubernetes.io/part-of: {{ include "maplarge.name" . }}
     {{- include "maplarge.labels" . | nindent 4 }}
 spec:
-  {{- if .Values.autoscaling }}
-  {{- if .Values.autoscaling.enabled }}
-  {{- end }}
-  {{- else}}
   replicas: {{ max 0 .Values.replicas }}
-  {{- end }}
   podManagementPolicy: {{ .Values.podManagementPolicy | quote }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   serviceName: {{ include "maplarge.headlessServiceName" . }}
