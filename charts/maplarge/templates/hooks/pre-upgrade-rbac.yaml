@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "maplarge.name" . }}-update-hook
+  name: {{ include "maplarge.fullname" . }}-update-hook
   annotations:
     "helm.sh/hook": pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -11,7 +11,7 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ include "maplarge.name" . }}-update-hook
+  name: {{ include "maplarge.fullname" . }}-update-hook
   annotations:
     "helm.sh/hook": pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -30,17 +30,17 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ include "maplarge.name" . }}-update-hook
+  name: {{ include "maplarge.fullname" . }}-update-hook
   annotations:
     "helm.sh/hook": pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     "helm.sh/hook-weight": "-5"
 subjects:
   - kind: ServiceAccount
-    name: {{ include "maplarge.name" . }}-update-hook
+    name: {{ include "maplarge.fullname" . }}-update-hook
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
-  name: {{ include "maplarge.name" . }}-update-hook
+  name: {{ include "maplarge.fullname" . }}-update-hook
   apiGroup: rbac.authorization.k8s.io
 {{- end}}
