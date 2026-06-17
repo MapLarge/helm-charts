@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 3.6.0](https://img.shields.io/badge/Version-3.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: maplarge](https://img.shields.io/badge/AppVersion-maplarge-informational?style=flat-square)
+![Version: 3.6.1](https://img.shields.io/badge/Version-3.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.6.1](https://img.shields.io/badge/AppVersion-3.6.1-informational?style=flat-square)
 
 ## Additional Information
 
@@ -93,9 +93,9 @@ $ helm install maplarge maplarge -f custom.values.yaml
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| hooks.preUpgradeHook | object | `{"image":{"repository":"bitnami/kubectl","tag":"latest"}}` | Enables pre-upgrade hook to prevent downgrades |
+| hooks.preUpgradeHook | object | `{"image":{"repository":"bitnami/kubectl","tag":"1.31.4"}}` | Enables pre-upgrade hook to prevent downgrades |
 | hooks.preUpgradeHook.image.repository | string | `"bitnami/kubectl"` | The image repository to use for the pre-upgrade hook job |
-| hooks.preUpgradeHook.image.tag | string | `"latest"` | The image tag to use for the pre-upgrade hook job |
+| hooks.preUpgradeHook.image.tag | string | `"1.31.4"` | The image tag to use for the pre-upgrade hook job. Pin to a kubectl version compatible with your cluster. |
 
 ### Ingress Configuration
 
@@ -118,7 +118,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | image.pullSecretName | string | `"maplarge-dockerhub-pull-secret"` | Secret to create or use to pull the docker image from the registry |
 | image.repository | string | `"docker.io/maplarge/server-netcore-dev"` | The fully qualified repository where the MapLarge image should be pulled from |
-| image.tag | string | `nil` | The MapLarge image tag to pull |
+| image.tag | string | `"latest"` | The MapLarge image tag to pull |
 
 ### License
 
