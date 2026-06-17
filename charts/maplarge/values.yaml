@@ -406,16 +406,16 @@ ingress:
         secretName: wildcard-dev-maplarge-net-tls-secret
 
 hooks:
-  # -- Enables pre-upgrade hook to prevent downgrades
+  # -- Enables pre-upgrade hook to ensure proper upgrade procedure for DB binary format revisions
   # @section -- Hooks
   preUpgradeHook:
     image:
       # -- The image repository to use for the pre-upgrade hook job
       # @section -- Hooks
       repository: bitnami/kubectl
-      # -- The image tag to use for the pre-upgrade hook job. Pin to a kubectl version compatible with your cluster.
+      # -- The image tag to use for the pre-upgrade hook job.
       # @section -- Hooks
-      tag: "1.31.4"
+      tag: "latest"
 
 # extraObjects could be utilized to add dynamic manifests via values
 extraObjects: []

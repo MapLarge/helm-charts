@@ -93,9 +93,9 @@ $ helm install maplarge maplarge -f custom.values.yaml
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| hooks.preUpgradeHook | object | `{"image":{"repository":"bitnami/kubectl","tag":"1.31.4"}}` | Enables pre-upgrade hook to prevent downgrades |
+| hooks.preUpgradeHook | object | `{"image":{"repository":"bitnami/kubectl","tag":"1.31.4"}}` | Enables pre-upgrade hook to ensure proper upgrade procedure for DB binary format revisions |
 | hooks.preUpgradeHook.image.repository | string | `"bitnami/kubectl"` | The image repository to use for the pre-upgrade hook job |
-| hooks.preUpgradeHook.image.tag | string | `"1.31.4"` | The image tag to use for the pre-upgrade hook job. Pin to a kubectl version compatible with your cluster. |
+| hooks.preUpgradeHook.image.tag | string | `"latest"` | The image tag to use for the pre-upgrade hook job. |
 
 ### Ingress Configuration
 
