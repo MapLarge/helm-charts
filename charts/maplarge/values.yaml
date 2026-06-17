@@ -20,7 +20,7 @@ image:
   repository: docker.io/maplarge/server-netcore-dev
   # -- The MapLarge image tag to pull
   # @section -- Image Information
-  tag:
+  tag: latest
 
 license:
   # -- A secret name for an existing license secret. If creating your own license secret, the key must be "_maplarge_license.lic"
@@ -413,9 +413,9 @@ hooks:
       # -- The image repository to use for the pre-upgrade hook job
       # @section -- Hooks
       repository: bitnami/kubectl
-      # -- The image tag to use for the pre-upgrade hook job
+      # -- The image tag to use for the pre-upgrade hook job. Pin to a kubectl version compatible with your cluster.
       # @section -- Hooks
-      tag: latest
+      tag: "1.31.4"
 
 # extraObjects could be utilized to add dynamic manifests via values
 extraObjects: []
