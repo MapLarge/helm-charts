@@ -20,11 +20,15 @@ spec:
   {{- if .class }}
   ingressClassName: {{ .class }}
   {{- end }}
+{{- $tlsHosts := list }}
 {{- range .hosts }}
-{{- if .tls.enabled }}
+{{- if .tls.enabled }}{{- $tlsHosts = append $tlsHosts . }}{{- end }}
+{{- end }}
+{{- if $tlsHosts }}
   tls:
+{{- range $tlsHosts }}
     - hosts:
-        - {{ .baseHostname | quote | lower }}
+        - {{ .baseHostname | lower | quote }}
 {{- $baseHostname := .baseHostname | lower -}}
 {{- range untilStep 0 (int .prefixes) 1 }}
         - {{ (printf "%d%s" . $baseHostname) | lower | quote }}

@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "maplarge.name" . }}-version-check
+  name: {{ include "maplarge.fullname" . }}-version-check
   annotations:
     "helm.sh/hook": pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -11,10 +11,13 @@ spec:
   backoffLimit: 0
   template:
     spec:
-      {{- if .Values.image.pullSecretName }}
+      {{- $pullSecret := include "maplarge.pullSecretName" . | trim }}
+      {{- if or $pullSecret .Values.image.extraPullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.image.pullSecretName }}
-      {{- if .Values.image.extraPullSecrets -}}
+      {{- if $pullSecret }}
+        - name: {{ $pullSecret }}
+      {{- end }}
+      {{- if .Values.image.extraPullSecrets }}
       {{- toYaml .Values.image.extraPullSecrets | nindent 8 }}
       {{- end }}
       {{- end }}
@@ -35,7 +38,7 @@ spec:
       {{- end }}
       {{- end }}
       {{- end }}
-      serviceAccountName: {{ include "maplarge.name" . }}-update-hook
+      serviceAccountName: {{ include "maplarge.fullname" . }}-update-hook
       restartPolicy: Never
       volumes:
         - name: workdir
@@ -61,7 +64,7 @@ spec:
           args:
             - |
               set -e
-              STS_NAME="{{ include "maplarge.name" . }}"
+              STS_NAME="{{ include "maplarge.fullname" . }}"
               NAMESPACE="{{ .Release.Namespace }}"
 
               NEW_RAW=$(cat /workdir/new_version.txt | tr -d '\n')
