@@ -70,7 +70,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | podAnnotations | object | `{}` | podAnnotations Extra annotations to add to your pods' metadata. Usually unnecessary. |
 | podSecurityContext | object | `{}` | Sets the podSecurityContext |
 | preferNodeAntiAffinity | bool | `false` | Set to true if you want to prefer that your replicas are placed on distinct nodes. |
-| replicas | int | `3` | replicas The number of replicas to create in the StatefulSet. Defaults to 1. Has no effect if horizontal pod autoscaling is enabled. |
+| replicas | int | `3` | replicas The number of replicas to create in the StatefulSet. Defaults to 1. |
 | requireNodeAntiAffinity | bool | `true` | Set to true if you want to REQUIRE that your replicas are placed on different nodes. |
 | securityContext | object | `{}` | Sets the securityContext |
 | service.annotations | object | `{}` | Annotations to be added to the Service Object |

@@ -33,7 +33,7 @@ license:
   # @section -- License
   annotations: {}
 
-# -- replicas The number of replicas to create in the StatefulSet. Defaults to 1. Has no effect if horizontal pod autoscaling is enabled.
+# -- replicas The number of replicas to create in the StatefulSet. Defaults to 1.
 # @section -- General
 replicas: 3
 
