@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 3.6.2](https://img.shields.io/badge/Version-3.6.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.6.2](https://img.shields.io/badge/AppVersion-3.6.2-informational?style=flat-square)
+![Version: 3.6.3](https://img.shields.io/badge/Version-3.6.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.6.3](https://img.shields.io/badge/AppVersion-3.6.3-informational?style=flat-square)
 
 ## Additional Information
 
@@ -93,7 +93,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| hooks.preUpgradeHook | object | `{"image":{"repository":"bitnami/kubectl","tag":"latest"}}` | Enables pre-upgrade hook to ensure proper upgrade procedure for DB binary format revisions |
+| hooks.preUpgradeHook | object | `{"enabled":true,"image":{"repository":"bitnami/kubectl","tag":"latest"}}` | Enables pre-upgrade hook to ensure proper upgrade procedure for DB binary format revisions |
 | hooks.preUpgradeHook.image.repository | string | `"bitnami/kubectl"` | The image repository to use for the pre-upgrade hook job |
 | hooks.preUpgradeHook.image.tag | string | `"latest"` | The image tag to use for the pre-upgrade hook job. |
 
