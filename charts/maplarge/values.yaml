@@ -409,6 +409,7 @@ hooks:
   # -- Enables pre-upgrade hook to ensure proper upgrade procedure for DB binary format revisions
   # @section -- Hooks
   preUpgradeHook:
+    enabled: true
     image:
       # -- The image repository to use for the pre-upgrade hook job
       # @section -- Hooks
