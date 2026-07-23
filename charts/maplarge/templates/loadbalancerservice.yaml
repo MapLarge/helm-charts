@@ -17,7 +17,8 @@ spec:
   sessionAffinity: None
   ports:
     - port: 80
-      targetPort: {{ default "80" .Values.service.targetPort }}
+      targetPort: http
       protocol: TCP
+      name: web
   selector:
     {{- include "maplarge.selectorLabels" . | nindent 4 }}
