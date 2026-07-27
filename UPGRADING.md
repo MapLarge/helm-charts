@@ -84,11 +84,14 @@ app which port to use via `ML_LISTEN_PORT` — no image configuration needed.
 External contracts are unchanged: the load balancer Service still exposes port 80
 in-cluster, and the ingress is unaffected.
 
-> **Upgrade behavior:** during a rolling update, old pods listen on 80 while new
-> pods listen on 8080 and publish `cluster.json` URLs pointing at 8080. The cluster
-> mesh re-forms once the roll completes, but plan for a brief replication disruption
-> — for production clusters, prefer a full restart (scale to 0, then upgrade) in a
-> maintenance window.
+> **Upgrade behavior:** a listen port (or scheme) change breaks the cluster mesh
+> during a rolling update — old and new pods advertise different addresses. The
+> pre-upgrade hook detects this by comparing the live StatefulSet's container
+> port/name against the incoming values and automatically performs a full restart
+> (scale to 0, wait, then upgrade), the same way it already handles version
+> mismatches. This applies when the hook is enabled and `replicas > 1`; if you
+> run with `hooks.preUpgradeHook.enabled: false`, plan the full restart manually
+> in a maintenance window.
 
 #### 4. Hardened security defaults
 
