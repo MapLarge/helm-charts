@@ -90,8 +90,6 @@ spec:
               secretKeyRef:
                 name: {{ $rootPasswordSecretName }}
                 key: rootPassword
-          - name: ML_REPL_ENABLED
-            value: {{ .Values.replicationEnabled | quote }}
           - name: ML_LISTEN_PORT
             value: {{ include "maplarge.containerPort" . | quote }}
           - name: ML_CLIENT_CONFIG_ENABLE_CORS
@@ -118,8 +116,6 @@ spec:
           - name: ML_CLIENT_CONFIG_PREFIX_COUNT
             value: {{ (index .Values.ingress.hosts 0).prefixes | quote }}
           {{- end }}
-          - name: ML_USE_TRANSACTIONAL_DATABASE
-            value: {{ .Values.useTransactionalDatabase | quote }}
           {{- if .Values.authPlugin.enabled }}
           - name: ml_cfg_authPluginParams
             value: {{ printf "config=/opt/maplarge/config/%s" .Values.authPlugin.filename }}

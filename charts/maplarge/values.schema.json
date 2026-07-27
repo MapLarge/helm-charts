@@ -617,10 +617,6 @@
             "type": "integer",
             "minimum": 1
         },
-        "replicationEnabled": {
-            "description": "Enables MapLarge replication (sets ML_REPL_ENABLED)",
-            "type": "boolean"
-        },
         "requireNodeAntiAffinity": {
             "description": "Set to true if you want to REQUIRE that your replicas are placed on different nodes. Recommended for production; left off by default so small/single-node clusters can schedule all replicas.",
             "type": "boolean"
@@ -835,10 +831,6 @@
                 "RollingUpdate",
                 "OnDelete"
             ]
-        },
-        "useTransactionalDatabase": {
-            "description": "useTransactionalDatabase NEED DEFINITION @ignore",
-            "type": "boolean"
         }
     },
     "additionalProperties": false

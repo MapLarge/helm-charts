@@ -162,6 +162,11 @@ removed. If you relied on them, set them explicitly:
 | `ingress.hosts[0].tls` | enabled, MapLarge wildcard secret | disabled, no secret | Set your TLS secret |
 | `requireNodeAntiAffinity` | `true` | `false` | Set `true` explicitly for production spread guarantees |
 | `jsjs.value` | nested string | flattened: `jsjs` is now the string itself | Move the content up one level: `jsjs: \|` |
+| `useTransactionalDatabase` | `true` (set `ML_USE_TRANSACTIONAL_DATABASE`) | removed — the chart no longer sets the env var; the app default applies | Add `ML_USE_TRANSACTIONAL_DATABASE` to `environmentVariables` if you need it pinned |
+
+Also removed: the chart no longer sets `ML_REPL_ENABLED` (v3 hardcoded it to
+`"false"`). If your deployment depends on it being explicitly set, add it to
+`environmentVariables`.
 
 Related fix: when `storage.storageClass` is unset, the PVC template now
 **omits** `storageClassName` entirely (using the cluster default). Previously an
@@ -191,8 +196,7 @@ with the ingress disabled and need these env vars absent, remove `ingress.hosts`
   of a TLS backend needs its controller's backend-protocol annotation.
 - **Previously hardcoded env vars now configurable** (defaults preserve v3
   behavior): `corsEnabled: true` (`ML_CLIENT_CONFIG_ENABLE_CORS`),
-  `corsAllowedOrigins: "%"` (`ML_CORS_ALLOWED_ORIGINS`),
-  `replicationEnabled: false` (`ML_REPL_ENABLED`).
+  `corsAllowedOrigins: "%"` (`ML_CORS_ALLOWED_ORIGINS`).
 - **Generated schema + docs:** `values.schema.json` is generated from `# @schema`
   annotations in `values.yaml` (config in `.schema.yaml`, regenerate with
   `helm schema`); CI keeps it and the README current.

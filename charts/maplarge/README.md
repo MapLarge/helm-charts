@@ -49,7 +49,6 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | existingRootPasswordSecretName | string | `nil` | An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword` |
 | extraEnvironmentVariables | list | `[]` | A second list of extra environment variables to be added to the MapLarge container, merged after environmentVariables |
 | jsjs | string | `nil` | Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line. |
-| replicationEnabled | bool | `false` | Enables MapLarge replication (sets ML_REPL_ENABLED) |
 | rootPassword | string | `nil` | If set, the root password will be set according to this value, otherwise a default value is created |
 | rootPasswordSecretName | string | `nil` | If set, defines the name of the secret for the root password |
 

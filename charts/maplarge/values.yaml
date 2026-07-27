@@ -116,10 +116,6 @@ corsEnabled: true
 # @section -- MapLarge Configuration
 corsAllowedOrigins: "%"
 
-# -- Enables MapLarge replication (sets ML_REPL_ENABLED)
-# @section -- MapLarge Configuration
-replicationEnabled: false
-
 # Some MapLarge configurations can be controlled via environment variables. These
 # can be set here.
 # -- A map of extra environment variables to be added to the MapLarge container
@@ -210,10 +206,6 @@ defaultClusterName: # @schema type: [string, null]
 # -- numberOfAutoJoinMembers Overrides the number of StatefulSet members listed in AutoJoinCoreClusterMembers in cluster.json. Defaults to replicas.
 # @ignore
 numberOfAutoJoinMembers: # @schema type: [integer, null] ; minimum: 1
-
-# -- useTransactionalDatabase NEED DEFINITION
-# @ignore
-useTransactionalDatabase: true
 
 # -- updateStrategyType RollingUpdate (default) or OnDelete (will only update when you delete pod)
 # @ignore
