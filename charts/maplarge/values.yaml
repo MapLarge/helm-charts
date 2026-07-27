@@ -116,19 +116,21 @@ corsEnabled: true
 # @section -- MapLarge Configuration
 corsAllowedOrigins: "%"
 
-# Some MapLarge configurations can be controlled via environment variables. These
-# can be set here.
-# -- A map of extra environment variables to be added to the MapLarge container
+# -- The MapLarge stderr log level (sets ML_STDERR_LOG_LEVEL). Set to null to omit the env var.
 # @section -- MapLarge Configuration
-environmentVariables: # @schema itemProperties: {"name": {"type": "string"}, "value": {"type": "string"}} ; allOf: [{"items": {"required": ["name"]}}]
-  - name: ML_STDERR_LOG_LEVEL
-    value: "2"
-  - name: ml_cfg_homepageRedirect
-    value: "dashboard"
+stderrLogLevel: "2" # @schema type: [string, null]
 
-# -- A second list of extra environment variables to be added to the MapLarge container, merged after environmentVariables
+# -- Redirect target for the homepage (sets ml_cfg_homepageRedirect). Set to null to omit the env var.
 # @section -- MapLarge Configuration
-extraEnvironmentVariables: [] # @schema item: object ; itemProperties: {"name": {"type": "string"}, "value": {"type": "string"}} ; allOf: [{"items": {"required": ["name"]}}]
+homepageRedirect: dashboard # @schema type: [string, null]
+
+# Some MapLarge configurations can be controlled via environment variables. These
+# can be set here. Entries use the full Kubernetes EnvVar schema (value or
+# valueFrom) and are appended after the chart-managed env vars, so an entry with
+# the same name as a chart-managed var wins.
+# -- A list of extra environment variables to be added to the MapLarge container
+# @section -- MapLarge Configuration
+environmentVariables: [] # @schema item: object ; itemProperties: {"name": {"type": "string"}} ; allOf: [{"items": {"required": ["name"]}}]
 
 # -- Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line.
 # @section -- MapLarge Configuration

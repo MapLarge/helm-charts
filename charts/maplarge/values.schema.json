@@ -64,7 +64,7 @@
             "type": "boolean"
         },
         "environmentVariables": {
-            "description": "A map of extra environment variables to be added to the MapLarge container",
+            "description": "A list of extra environment variables to be added to the MapLarge container",
             "allOf": [
                 {
                     "items": {
@@ -78,9 +78,6 @@
                 "type": "object",
                 "properties": {
                     "name": {
-                        "type": "string"
-                    },
-                    "value": {
                         "type": "string"
                     }
                 }
@@ -92,29 +89,6 @@
                 "string",
                 "null"
             ]
-        },
-        "extraEnvironmentVariables": {
-            "description": "A second list of extra environment variables to be added to the MapLarge container, merged after environmentVariables",
-            "allOf": [
-                {
-                    "items": {
-                        "required": [
-                            "name"
-                        ]
-                    }
-                }
-            ],
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "value": {
-                        "type": "string"
-                    }
-                }
-            }
         },
         "extraLabels": {
             "description": "extraLabels Extra labels to apply to all resources",
@@ -162,6 +136,13 @@
                 }
             },
             "additionalProperties": false
+        },
+        "homepageRedirect": {
+            "description": "Redirect target for the homepage (sets ml_cfg_homepageRedirect). Set to null to omit the env var.",
+            "type": [
+                "string",
+                "null"
+            ]
         },
         "hooks": {
             "type": "object",
@@ -726,6 +707,13 @@
                     "type": "integer"
                 }
             }
+        },
+        "stderrLogLevel": {
+            "description": "The MapLarge stderr log level (sets ML_STDERR_LOG_LEVEL). Set to null to omit the env var.",
+            "type": [
+                "string",
+                "null"
+            ]
         },
         "storage": {
             "type": "object",

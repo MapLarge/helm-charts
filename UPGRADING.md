@@ -33,7 +33,7 @@ Notable constraints that may catch existing values files:
 |---|---|
 | Unknown keys rejected | Typos and removed values fail validation (`additionalProperties: false`) |
 | `image.pullPolicy` | Must be `Always`, `IfNotPresent`, or `Never` |
-| `environmentVariables[]` / `extraEnvironmentVariables[]` | Each entry requires `name` |
+| `environmentVariables[]` | Each entry requires `name` |
 | `ingress.hosts[]` | `baseHostname` required; only `baseHostname`, `prefixes`, `tls` allowed |
 | `listenPort` | Integer, 1024–65535 (see §3) |
 
@@ -167,6 +167,15 @@ Also removed: the chart no longer sets `ML_REPL_ENABLED` (v3 hardcoded it to
 `"false"`). If your deployment depends on it being explicitly set, add it to
 `environmentVariables`.
 
+`extraEnvironmentVariables` is gone and `environmentVariables` now defaults to
+empty: the two chart defaults it used to carry became named values
+(`stderrLogLevel: "2"` for `ML_STDERR_LOG_LEVEL`, `homepageRedirect: dashboard`
+for `ml_cfg_homepageRedirect`). Move any `extraEnvironmentVariables` entries
+into `environmentVariables` — it supports the full EnvVar schema (value or
+valueFrom) and is appended after the chart-managed env vars, so same-name
+entries win. v3 users who set `environmentVariables` no longer need to
+re-declare the two defaults.
+
 Two undocumented v3 overrides were also removed: `headlessServiceName` (the
 headless Service name always derives from the release fullname; use
 `fullnameOverride` to change it) and `defaultClusterName` (set
@@ -226,9 +235,8 @@ with the ingress disabled and need these env vars absent, remove `ingress.hosts`
   annotations in `values.yaml` (config in `.schema.yaml`, regenerate with
   `helm schema`); CI keeps it and the README current.
 - **Previously hidden values documented:** `nameOverride`, `fullnameOverride`,
-  `team`, `extraEnvironmentVariables`, `extraObjects`,
-  `numberOfAutoJoinMembers`, `configurationDirectory`, `initContainerImage`
-  are now in `values.yaml` and the schema.
+  `team`, `extraObjects`, `numberOfAutoJoinMembers`, `configurationDirectory`,
+  `initContainerImage` are now in `values.yaml` and the schema.
 - **Security scanning:** the chart passes `trivy config` apart from documented,
   justified waivers in `.trivyignore` (scan with
   `--ignorefile charts/maplarge/.trivyignore`).

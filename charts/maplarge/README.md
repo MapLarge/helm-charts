@@ -46,12 +46,13 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | config | object | `nil` | Allows for custom configurations for the MapLarge config.json. |
 | corsAllowedOrigins | string | `"%"` | Allowed CORS origins (sets ML_CORS_ALLOWED_ORIGINS) |
 | corsEnabled | bool | `true` | Enables CORS in the MapLarge client config (sets ML_CLIENT_CONFIG_ENABLE_CORS) |
-| environmentVariables | list | `[{"name":"ML_STDERR_LOG_LEVEL","value":"2"},{"name":"ml_cfg_homepageRedirect","value":"dashboard"}]` | A map of extra environment variables to be added to the MapLarge container |
+| environmentVariables | list | `[]` | A list of extra environment variables to be added to the MapLarge container |
 | existingRootPasswordSecretName | string | `nil` | An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword` |
-| extraEnvironmentVariables | list | `[]` | A second list of extra environment variables to be added to the MapLarge container, merged after environmentVariables |
+| homepageRedirect | string | `"dashboard"` | Redirect target for the homepage (sets ml_cfg_homepageRedirect). Set to null to omit the env var. |
 | jsjs | string | `nil` | Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line. |
 | rootPassword | string | `nil` | If set, the root password will be set according to this value, otherwise a default value is created |
 | rootPasswordSecretName | string | `nil` | If set, defines the name of the secret for the root password |
+| stderrLogLevel | string | `"2"` | The MapLarge stderr log level (sets ML_STDERR_LOG_LEVEL). Set to null to omit the env var. |
 
 ### General
 
