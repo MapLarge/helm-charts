@@ -91,11 +91,13 @@ spec:
                 name: {{ $rootPasswordSecretName }}
                 key: rootPassword
           - name: ML_REPL_ENABLED
-            value: "false"
+            value: {{ .Values.replicationEnabled | quote }}
+          - name: ML_LISTEN_PORT
+            value: {{ include "maplarge.containerPort" . | quote }}
           - name: ML_CLIENT_CONFIG_ENABLE_CORS
-            value: "true"
+            value: {{ .Values.corsEnabled | quote }}
           - name: ML_CORS_ALLOWED_ORIGINS
-            value: '%'
+            value: {{ .Values.corsAllowedOrigins | quote }}
           {{- if not .Values.persistConfiguration }}
           - name: ML_CONFIG_DIR
             value: {{ $configDirectory }}
@@ -108,11 +110,11 @@ spec:
           - name: ML_AUTH_PLUGIN
             value: {{ .Values.authPlugin.typeName | quote }}
           {{- end }}
-          {{- if .Values.ingress.enabled }}
+          {{- with (include "maplarge.hostname" .) }}
           - name: ML_CLIENT_CONFIG_SERVER_HOSTNAME
-            value: {{ include "maplarge.hostname" . }}
+            value: {{ . }}
           {{- end }}
-          {{- if .Values.ingress.enabled }}
+          {{- if and .Values.ingress.hosts (hasKey (index .Values.ingress.hosts 0) "prefixes") }}
           - name: ML_CLIENT_CONFIG_PREFIX_COUNT
             value: {{ (index .Values.ingress.hosts 0).prefixes | quote }}
           {{- end }}
@@ -132,29 +134,26 @@ spec:
           {{- if .Values.extraEnvironmentVariables }}
           {{- (toYaml .Values.extraEnvironmentVariables | nindent 10) }}
           {{- end }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ include "maplarge.imageTag" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ default "80" .Values.service.targetPort }}
+            - containerPort: {{ include "maplarge.containerPort" . }}
               protocol: TCP
-              name: http
-          {{- if .Values.lte.enabled }}
-            - containerPort: 50595
-              protocol: TCP
-            - containerPort: 50597
-              protocol: TCP
-          {{- end }}
+              name: {{ include "maplarge.scheme" . }}
+          {{- /* Probes default their httpGet port (named port) and scheme from tls.enabled;
+               explicit httpGet.port / httpGet.scheme in values win over the derived values. */}}
+          {{- $probeDefaults := dict "httpGet" (dict "port" (include "maplarge.scheme" .) "scheme" (include "maplarge.scheme" . | upper)) }}
           {{- if .Values.startupProbe }}
           startupProbe:
-          {{- toYaml .Values.startupProbe | nindent 12 }}
+          {{- toYaml (mergeOverwrite (deepCopy $probeDefaults) .Values.startupProbe) | nindent 12 }}
           {{- end }}
           {{- if .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
+            {{- toYaml (mergeOverwrite (deepCopy $probeDefaults) .Values.livenessProbe) | nindent 12 }}
           {{- end }}
           {{- if .Values.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
+            {{- toYaml (mergeOverwrite (deepCopy $probeDefaults) .Values.readinessProbe) | nindent 12 }}
           {{- end }}
           {{- if .Values.resources }}
           resources:
@@ -163,6 +162,8 @@ spec:
           terminationMessagePath: {{ .Values.terminationMessagePath | quote }}
           terminationMessagePolicy: {{ .Values.terminationMessagePolicy | quote }}
           volumeMounts:
+          - mountPath: /tmp
+            name: tmp
           - mountPath: /opt/maplarge/App_Data
             {{- include "maplarge.pvcName" . | indent 12 }}
           {{- if not .Values.persistConfiguration }}
@@ -282,6 +283,8 @@ spec:
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       volumes:
+        - name: tmp
+          emptyDir: {}
         - name: config
           configMap:
             name: {{ $configMapName | quote }}
@@ -309,6 +312,8 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: {{ .Values.appDataVolumeSizeInGB }}Gi
-        storageClassName: {{ .Values.appDataVolumeStorageClassName }}
+            storage: {{ .Values.storage.size }}Gi
+        {{- with .Values.storage.storageClass }}
+        storageClassName: {{ . }}
+        {{- end }}
         volumeMode: Filesystem

@@ -1,0 +1,39 @@
+# Fixture of intentionally invalid values.
+# CI verifies that `helm template` rejects this file against values.schema.json.
+#
+# values.schema.json is GENERATED from the `# @schema` annotations in
+# values.yaml (see .schema.yaml; regenerate with `helm schema`). If you add a
+# new annotation constraint, consider adding a violation here so a bad
+# regeneration is caught by CI instead of in production.
+image:
+  tag: 123                # violates type:string/null
+  pullPolicy: Sometimes   # not in enum
+  bogusField: true        # additionalProperties:false on image
+replicas: 0               # violates minimum:1
+storage:
+  size: 0                 # violates minimum:1
+  bogusField: true        # additionalProperties:false on storage
+updateStrategyType: Rolling  # not in enum [RollingUpdate, OnDelete]
+listenPort: 70000         # exceeds maximum:65535
+loadBalancerService:
+  port: 0                 # violates minimum:1
+  bogusField: true        # additionalProperties:false on loadBalancerService
+hooks:
+  preUpgradeHook:
+    enabled: "yes"        # string, violates type:boolean
+tls:
+  enabled: "true"         # string, violates type:boolean
+  bogusField: true        # additionalProperties:false on tls
+ingress:
+  enabled: true
+  hosts:
+    - baseHostname: ""    # violates minLength:1; required
+      prefixes: -1        # violates minimum:0
+      bogusField: true    # additionalProperties:false on hosts items
+tolerations: {}           # violates type:array
+dockerCredentials:
+  registry: docker.io     # dependentRequired: username, password, email missing
+environmentVariables:
+  - value: no-name        # items require name
+corsEnabled: "true"       # string, violates type:boolean
+replicaCount: 3           # unknown top-level key, additionalProperties:false at root

@@ -46,7 +46,7 @@ spec:
 
       initContainers:
         - name: get-new-version
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ include "maplarge.imageTag" . }}"
           volumeMounts:
             - name: workdir
               mountPath: /workdir
