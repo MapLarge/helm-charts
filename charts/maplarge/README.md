@@ -39,6 +39,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| authPlugin.config | string | `nil` | Custom configuration for the authentication plugin |
 | authPlugin.enabled | bool | `false` | Determines if the authPlugin should be enabled |
 | authPlugin.filename | string | `nil` | Specifices the path in the container where the authPlugin configuration file can be found. Can be left blank. |
 | authPlugin.typeName | string | `nil` | Specifies the MapLarge authPlugin to use |
@@ -85,12 +86,6 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | team | string | `nil` | When set, adds team ownership labels (maplarge.com/project, team, app.kubernetes.io/owner) to all resources |
 | tls.enabled | bool | `false` | Set to true if the MapLarge container is configured to serve HTTPS. The chart then defaults the listen port to 8443 (Service port 443), names ports https so meshes detect the protocol, uses https for inter-node cluster communication, and probes over HTTPS. The app itself must be configured to serve TLS; this is distinct from ingress.hosts[].tls, which controls TLS at the ingress edge. |
 | tolerations | list | `[]` | Sets the tolerations for the MapLarge pod |
-
-### Docker configurations
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| dockerCredentials | object | `{}` | this will create your pull secret for you. Required fields are registry, username, password, and email |
 
 ### Hooks
 

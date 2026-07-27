@@ -5,6 +5,14 @@
         "authPlugin": {
             "type": "object",
             "properties": {
+                "config": {
+                    "description": "Custom configuration for the authentication plugin",
+                    "type": [
+                        "object",
+                        "string",
+                        "null"
+                    ]
+                },
                 "enabled": {
                     "description": "Determines if the authPlugin should be enabled",
                     "type": "boolean"
@@ -61,42 +69,6 @@
                 "string",
                 "null"
             ]
-        },
-        "dockerCredentials": {
-            "description": "this will create your pull secret for you. Required fields are registry, username, password, and email",
-            "allOf": [
-                {
-                    "dependentRequired": {
-                        "email": [
-                            "registry",
-                            "username",
-                            "password"
-                        ],
-                        "password": [
-                            "registry",
-                            "username",
-                            "email"
-                        ],
-                        "registry": [
-                            "username",
-                            "password",
-                            "email"
-                        ],
-                        "username": [
-                            "registry",
-                            "password",
-                            "email"
-                        ]
-                    }
-                }
-            ],
-            "patternProperties": {
-                "^(registry|username|password|email)$": {
-                    "type": "string",
-                    "minLength": 1
-                }
-            },
-            "additionalProperties": false
         },
         "environmentVariables": {
             "description": "A map of extra environment variables to be added to the MapLarge container",

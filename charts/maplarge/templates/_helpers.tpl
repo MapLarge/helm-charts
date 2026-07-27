@@ -100,11 +100,7 @@ Image pull secret name
 */}}
 
 {{- define "maplarge.pullSecretName" }}
-{{- if and (.Values.image) (.Values.image.pullSecretName) }}
 {{- .Values.image.pullSecretName }}
-{{- else if .Values.dockerCredentials }}
-{{- include "maplarge.fullname" . -}}-pull-secret
-{{- end}}
 {{- end }}
 
 {{/*

@@ -34,7 +34,6 @@ Notable constraints that may catch existing values files:
 | Unknown keys rejected | Typos and removed values fail validation (`additionalProperties: false`) |
 | `image.pullPolicy` | Must be `Always`, `IfNotPresent`, or `Never` |
 | `environmentVariables[]` / `extraEnvironmentVariables[]` | Each entry requires `name` |
-| `dockerCredentials` | All-or-nothing: setting any of `registry`/`username`/`password`/`email` requires all four |
 | `ingress.hosts[]` | `baseHostname` required; only `baseHostname`, `prefixes`, `tls` allowed |
 | `listenPort` | Integer, 1024–65535 (see §3) |
 
@@ -172,7 +171,27 @@ Related fix: when `storage.storageClass` is unset, the PVC template now
 **omits** `storageClassName` entirely (using the cluster default). Previously an
 unset value rendered `storageClassName: ""`, which disables dynamic provisioning.
 
-#### 9. Hostname env vars decoupled from the ingress
+#### 9. `dockerCredentials` removed — the chart no longer creates pull secrets
+
+Putting registry credentials in Helm values embeds them in release manifests,
+GitOps repos, and rendered output, so the `dockerCredentials` value and the
+Secret it generated are gone. Create the pull secret out-of-band and reference
+it by name:
+
+```bash
+kubectl create secret docker-registry my-pull-secret \
+  --docker-server=... --docker-username=... --docker-password=...
+```
+
+```yaml
+image:
+  pullSecretName: my-pull-secret
+```
+
+For a GitOps-friendly path, manage the secret with your secrets operator (e.g.
+an `ExternalSecret` via `extraObjects`).
+
+#### 10. Hostname env vars decoupled from the ingress
 
 `ML_CLIENT_CONFIG_SERVER_HOSTNAME` and `ML_CLIENT_CONFIG_PREFIX_COUNT` were only
 rendered when `ingress.enabled: true`. They now render whenever a hostname is

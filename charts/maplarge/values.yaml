@@ -289,16 +289,6 @@ securityContext:
   capabilities:
     drop: ["ALL"]
 
-# -- this will create your pull secret for you. Required fields are registry, username, password, and email
-# @section -- Docker configurations
-dockerCredentials: {} # @schema patternProperties: {"^(registry|username|password|email)$": {"type": "string", "minLength": 1}} ; additionalProperties: false ; allOf: [{"dependentRequired": {"registry": ["username", "password", "email"], "username": ["registry", "password", "email"], "password": ["registry", "username", "email"], "email": ["registry", "username", "password"]}}]
-# Example:
-#   registry: docker.io
-#   username: dockerhubusername
-#   password: dockerhubpassword
-#   email: dockerhub@emailaddress.com
-
-
 # Probe httpGet port and scheme are derived from tls.enabled (http/HTTP, or
 # https/HTTPS when TLS is on). Set httpGet.port / httpGet.scheme explicitly on
 # any probe to override the derived values.
@@ -415,8 +405,8 @@ authPlugin: # @schema additionalProperties: false
   # @section -- MapLarge Configuration
   filename: # @schema type: [string, null]
   # -- Custom configuration for the authentication plugin
-  # @section -- MapLarge Configuration 
-  config: # @schema type: [object, string]
+  # @section -- MapLarge Configuration
+  config: # @schema type: [object, string, null]
 
 ingress: # @schema additionalProperties: false
   # -- Enable ingress object
