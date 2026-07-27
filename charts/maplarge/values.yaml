@@ -195,14 +195,6 @@ interClusterConfigJson: # @schema type: [string, null]
 # @section -- General
 clusterConfig: # @schema type: [object, null]
 
-# -- headlessServiceName Overrides the name of the headless service used for StatefulSet pod DNS
-# @ignore
-headlessServiceName: # @schema type: [string, null]
-
-# -- defaultClusterName Overrides the DefaultClusterName written to cluster.json. Defaults to maplarge-cluster
-# @ignore
-defaultClusterName: # @schema type: [string, null]
-
 # -- numberOfAutoJoinMembers Overrides the number of StatefulSet members listed in AutoJoinCoreClusterMembers in cluster.json. Defaults to replicas.
 # @ignore
 numberOfAutoJoinMembers: # @schema type: [integer, null] ; minimum: 1

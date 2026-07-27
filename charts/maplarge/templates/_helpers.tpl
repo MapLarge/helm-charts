@@ -91,8 +91,7 @@ Create the name of the headless service to use. The headless service is used for
 */}}
 
 {{- define "maplarge.headlessServiceName" -}}
-{{- $name := default (include "maplarge.fullname" .) .Values.headlessServiceName -}}
-{{- printf "%s" $name | trunc 63 }}
+{{- include "maplarge.fullname" . | trunc 63 }}
 {{- end }}
 
 {{/*
@@ -193,7 +192,8 @@ Contents of `cluster.json` file, typically located either in `/opt/maplarge/App_
   {{- $port := include "maplarge.containerPort" . }}
   {{- $scheme := include "maplarge.scheme" . }}
   {{- $defaultSelfAddress := printf "%s://${HOSTNAME}.%s.%s:%d" $scheme $headlessServiceName .Release.Namespace (int $port) }}
-  {{- $defaultClusterName := default "maplarge-cluster" .Values.defaultClusterName }}
+  {{- /* Override via clusterConfig.DefaultClusterName, which wins the merge below. */}}
+  {{- $defaultClusterName := "maplarge-cluster" }}
   {{- $autoJoinMembers := list }}
   {{- $upperIndex := default .Values.replicas .Values.numberOfAutoJoinMembers }}
   {{- range untilStep 0 (int $upperIndex) 1 }}

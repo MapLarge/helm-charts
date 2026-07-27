@@ -167,6 +167,12 @@ Also removed: the chart no longer sets `ML_REPL_ENABLED` (v3 hardcoded it to
 `"false"`). If your deployment depends on it being explicitly set, add it to
 `environmentVariables`.
 
+Two undocumented v3 overrides were also removed: `headlessServiceName` (the
+headless Service name always derives from the release fullname; use
+`fullnameOverride` to change it) and `defaultClusterName` (set
+`clusterConfig.DefaultClusterName` instead, which wins the merge over the
+generated default).
+
 Related fix: when `storage.storageClass` is unset, the PVC template now
 **omits** `storageClassName` entirely (using the cluster default). Previously an
 unset value rendered `storageClassName: ""`, which disables dynamic provisioning.
@@ -220,9 +226,9 @@ with the ingress disabled and need these env vars absent, remove `ingress.hosts`
   annotations in `values.yaml` (config in `.schema.yaml`, regenerate with
   `helm schema`); CI keeps it and the README current.
 - **Previously hidden values documented:** `nameOverride`, `fullnameOverride`,
-  `team`, `extraEnvironmentVariables`, `extraObjects`, `defaultClusterName`,
-  `numberOfAutoJoinMembers`, `headlessServiceName`, `configurationDirectory`,
-  `initContainerImage` are now in `values.yaml` and the schema.
+  `team`, `extraEnvironmentVariables`, `extraObjects`,
+  `numberOfAutoJoinMembers`, `configurationDirectory`, `initContainerImage`
+  are now in `values.yaml` and the schema.
 - **Security scanning:** the chart passes `trivy config` apart from documented,
   justified waivers in `.trivyignore` (scan with
   `--ignorefile charts/maplarge/.trivyignore`).

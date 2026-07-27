@@ -63,13 +63,6 @@
             "description": "Enables CORS in the MapLarge client config (sets ML_CLIENT_CONFIG_ENABLE_CORS)",
             "type": "boolean"
         },
-        "defaultClusterName": {
-            "description": "defaultClusterName Overrides the DefaultClusterName written to cluster.json. Defaults to maplarge-cluster @ignore",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
         "environmentVariables": {
             "description": "A map of extra environment variables to be added to the MapLarge container",
             "allOf": [
@@ -169,13 +162,6 @@
                 }
             },
             "additionalProperties": false
-        },
-        "headlessServiceName": {
-            "description": "headlessServiceName Overrides the name of the headless service used for StatefulSet pod DNS @ignore",
-            "type": [
-                "string",
-                "null"
-            ]
         },
         "hooks": {
             "type": "object",
