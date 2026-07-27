@@ -204,6 +204,12 @@ Contents of `cluster.json` file, typically located either in `/opt/maplarge/App_
     {{- $autoJoinMembers = append $autoJoinMembers (printf "%s://%s-%d.%s.%s:%d" $scheme $statefulSetName (int .) $headlessServiceName $namespace (int $port)) }}
   {{- end }}
   {{- $clusterConfig := (dict "DefaultSelfAddress" $defaultSelfAddress "DefaultClusterName" $defaultClusterName "AutoJoinCoreClusterMembers" $autoJoinMembers ) }}
+  {{- /* With fewer than 3 nodes the default replication criteria cannot be met and
+       MapLarge logs a warning on every changeset; default the factor to 1 instead.
+       A user-supplied clusterConfig.ChangeSetReplicationFactor wins the merge. */}}
+  {{- if lt (int .Values.replicas) 3 }}
+    {{- $_ := set $clusterConfig "ChangeSetReplicationFactor" 1 }}
+  {{- end }}
   {{- $mergedClusterConfig := merge $clusterConfigToMerge $clusterConfig }}
   {{- $clusterConfigJson := toPrettyJson $mergedClusterConfig }}
   {{- $clusterConfigJson }}

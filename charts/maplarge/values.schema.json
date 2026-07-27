@@ -27,7 +27,7 @@
             "additionalProperties": false
         },
         "clusterConfig": {
-            "description": "Extra configuration options for cluster.json",
+            "description": "Extra configuration options for cluster.json. Keys set here win over the chart-generated defaults. When replicas \u003c 3, the chart defaults ChangeSetReplicationFactor to 1 so MapLarge does not warn about unmet replication criteria; set it here to override.",
             "type": [
                 "object",
                 "null"
