@@ -375,15 +375,10 @@
         },
         "jsjs": {
             "description": "Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line.",
-            "type": "object",
-            "properties": {
-                "value": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
-                }
-            }
+            "type": [
+                "string",
+                "null"
+            ]
         },
         "license": {
             "type": "object",
@@ -524,6 +519,9 @@
             "properties": {
                 "fsGroup": {
                     "type": "integer"
+                },
+                "fsGroupChangePolicy": {
+                    "type": "string"
                 },
                 "runAsGroup": {
                     "type": "integer"

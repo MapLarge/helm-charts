@@ -48,7 +48,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | environmentVariables | list | `[{"name":"ML_STDERR_LOG_LEVEL","value":"2"},{"name":"ml_cfg_homepageRedirect","value":"dashboard"}]` | A map of extra environment variables to be added to the MapLarge container |
 | existingRootPasswordSecretName | string | `nil` | An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword` |
 | extraEnvironmentVariables | list | `[]` | A second list of extra environment variables to be added to the MapLarge container, merged after environmentVariables |
-| jsjs | object | `{"value":""}` | Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line. |
+| jsjs | string | `nil` | Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line. |
 | replicationEnabled | bool | `false` | Enables MapLarge replication (sets ML_REPL_ENABLED) |
 | rootPassword | string | `nil` | If set, the root password will be set according to this value, otherwise a default value is created |
 | rootPasswordSecretName | string | `nil` | If set, defines the name of the secret for the root password |
@@ -72,8 +72,8 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | nodeAffinityRequirements | list | `[]` | Sets the nodeAffinityRequirements for the pod |
 | nodeSelector | object | `{}` | Sets the node selector for the MapLarge pod |
 | podAnnotations | object | `{}` | podAnnotations Extra annotations to add to your pods' metadata. Usually unnecessary. |
-| podSecurityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Sets the podSecurityContext. Defaults run the pod as a non-root user with a RuntimeDefault seccomp profile. Set to {} to fall back to cluster defaults. |
-| preferNodeAntiAffinity | bool | `false` | Set to true if you want to prefer that your replicas are placed on distinct nodes. |
+| podSecurityContext | object | `{"fsGroup":30102,"fsGroupChangePolicy":"OnRootMismatch","runAsGroup":30102,"runAsNonRoot":true,"runAsUser":30101,"seccompProfile":{"type":"RuntimeDefault"}}` | Sets the podSecurityContext. Defaults run the pod as a non-root user with a RuntimeDefault seccomp profile. Set to {} to fall back to cluster defaults. |
+| preferNodeAntiAffinity | bool | `true` | Set to true if you want to prefer that your replicas are placed on distinct nodes. |
 | replicas | int | `3` | replicas The number of replicas to create in the StatefulSet. Defaults to 1. |
 | requireNodeAntiAffinity | bool | `false` | Set to true if you want to REQUIRE that your replicas are placed on different nodes. Recommended for production; left off by default so small/single-node clusters can schedule all replicas. |
 | securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | Sets the container securityContext. Defaults block privilege escalation, drop all capabilities, and mount the root filesystem read-only (/tmp is an emptyDir; App_Data is the PVC). Set to {} to fall back to cluster defaults. |

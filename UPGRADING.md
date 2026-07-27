@@ -161,6 +161,7 @@ removed. If you relied on them, set them explicitly:
 | `ingress.hosts[0].baseHostname` | `customer-a.dev.maplarge.net` | `maplarge.example.com` | Set your hostname (you almost certainly already do) |
 | `ingress.hosts[0].tls` | enabled, MapLarge wildcard secret | disabled, no secret | Set your TLS secret |
 | `requireNodeAntiAffinity` | `true` | `false` | Set `true` explicitly for production spread guarantees |
+| `jsjs.value` | nested string | flattened: `jsjs` is now the string itself | Move the content up one level: `jsjs: \|` |
 
 Related fix: when `storage.storageClass` is unset, the PVC template now
 **omits** `storageClassName` entirely (using the cluster default). Previously an

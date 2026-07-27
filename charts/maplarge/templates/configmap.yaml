@@ -13,7 +13,7 @@ data:
   {{- if .Values.authPlugin.enabled }}
   {{ .Values.authPlugin.filename }}: {{ toPrettyJson .Values.authPlugin.config | quote }}
   {{- end }}
-  {{- if or .Values.jsjs.value .Values.notebooks.enabled }}
+  {{- if or .Values.jsjs .Values.notebooks.enabled }}
   js.js: {{ include "maplarge.jsjs" .  | quote }}
   {{- end }}
   {{- if .Values.interClusterConfigJson}}

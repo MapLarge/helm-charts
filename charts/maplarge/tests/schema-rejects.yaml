@@ -36,4 +36,6 @@ dockerCredentials:
 environmentVariables:
   - value: no-name        # items require name
 corsEnabled: "true"       # string, violates type:boolean
+jsjs:
+  value: "old shape"      # v3 object shape; jsjs is now a plain string
 replicaCount: 3           # unknown top-level key, additionalProperties:false at root

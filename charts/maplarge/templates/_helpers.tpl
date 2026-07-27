@@ -232,8 +232,8 @@ Builds the js.js based on the inputs from the values if Notebooks are enabled.
 {{- define "maplarge.jsjs" }}
   {{- $jsjs := "" -}}
   {{- $nJsjs := "" -}}
-  {{- if .Values.jsjs.value -}}
-  {{- $jsjs = cat .Values.jsjs.value "\n" }}
+  {{- if .Values.jsjs -}}
+  {{- $jsjs = cat .Values.jsjs "\n" }}
   {{- end }}
   {{- if .Values.notebooks.enabled }}
   {{- $nJsjs = "ml.config.enableNotebooks = true;"}}

@@ -102,7 +102,7 @@ spec:
           - name: ML_CONFIG_DIR
             value: {{ $configDirectory }}
           {{- end }}
-          {{- if or .Values.jsjs .Values.notebooks.jsjs }}
+          {{- if or .Values.jsjs .Values.notebooks.enabled }}
           - name: ML_CLIENT_CONFIG_JS_JS_PATH
             value: /opt/maplarge/config/js.js
           {{- end }}
@@ -186,7 +186,7 @@ spec:
             name: config
             subPath: {{ .Values.authPlugin.filename }}
           {{- end }}
-          {{- if or (.Values.jsjs.value) (and .Values.notebooks.enabled .Values.notebooks.jsjs) }}
+          {{- if or .Values.jsjs .Values.notebooks.enabled }}
           - mountPath: {{ printf "%s/js.js" $configDirectory }}
             name: config
             subPath: js.js

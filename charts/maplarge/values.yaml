@@ -136,8 +136,7 @@ extraEnvironmentVariables: [] # @schema item: object ; itemProperties: {"name": 
 
 # -- Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line.
 # @section -- MapLarge Configuration
-jsjs:
-  value: | # @schema type: [string, null]
+jsjs: # @schema type: [string, null]
 
 # -- (object) Allows for custom configurations for the MapLarge config.json.
 # @section -- MapLarge Configuration
