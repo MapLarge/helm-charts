@@ -1,9 +1,13 @@
 name: Release Charts
 
+# Releases are cut by pushing a tag matching chart-releaser's tag format:
+#   git tag maplarge-<version> && git push origin maplarge-<version>
+# The tag must match the version in charts/maplarge/Chart.yaml at the tagged
+# commit, and should point at a commit on main.
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "maplarge-*"
 
 permissions: {}
 
@@ -17,6 +21,16 @@ jobs:
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           fetch-depth: 0
+
+      - name: Verify tag matches chart version
+        run: |
+          CHART_VERSION=$(awk '/^version:/{print $2}' charts/maplarge/Chart.yaml)
+          EXPECTED="maplarge-${CHART_VERSION}"
+          if [[ "$GITHUB_REF_NAME" != "$EXPECTED" ]]; then
+            echo "ERROR: tag '$GITHUB_REF_NAME' does not match the chart version at this commit (expected '$EXPECTED')"
+            exit 1
+          fi
+          echo "Tag matches chart version $CHART_VERSION"
 
       - name: Configure Git
         run: |
