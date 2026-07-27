@@ -442,7 +442,7 @@ ingress: # @schema additionalProperties: false
     - baseHostname: maplarge.example.com # @schema required: true ; minLength: 1
     # -- The number of dns prefixes to create
     # @section -- Ingress Configuration
-      prefixes: 0 # @schema minimum: 0
+      prefixes: 8 # @schema minimum: 0
       tls: # @schema additionalProperties: false
         # -- Controls if the site is TLS protected
         # @section -- Ingress Configuration
