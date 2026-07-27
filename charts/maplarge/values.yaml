@@ -161,7 +161,7 @@ serviceAccount: # @schema additionalProperties: false
 
 # -- Set to true if you want to prefer that your replicas are placed on distinct nodes.
 # @section -- General
-preferNodeAntiAffinity: false
+preferNodeAntiAffinity: true
 
 # -- Set to true if you want to REQUIRE that your replicas are placed on different nodes. Recommended for production; left off by default so small/single-node clusters can schedule all replicas.
 # @section -- General
@@ -282,9 +282,10 @@ nodeAffinityRequirements: []
 # @section -- General
 podSecurityContext:
   runAsNonRoot: true
-  runAsUser: 10001
-  runAsGroup: 10001
-  fsGroup: 10001
+  runAsUser: 30101
+  runAsGroup: 30102
+  fsGroup: 30102
+  fsGroupChangePolicy: OnRootMismatch
   seccompProfile:
     type: RuntimeDefault
 
@@ -441,7 +442,7 @@ ingress: # @schema additionalProperties: false
     - baseHostname: maplarge.example.com # @schema required: true ; minLength: 1
     # -- The number of dns prefixes to create
     # @section -- Ingress Configuration
-      prefixes: 8 # @schema minimum: 0
+      prefixes: 0 # @schema minimum: 0
       tls: # @schema additionalProperties: false
         # -- Controls if the site is TLS protected
         # @section -- Ingress Configuration
