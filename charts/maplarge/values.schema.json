@@ -90,6 +90,10 @@
                 "null"
             ]
         },
+        "extraInitContainers": {
+            "description": "extraInitContainers Specify any extra list of additional initContainers for the MapLarge pod",
+            "type": "array"
+        },
         "extraLabels": {
             "description": "extraLabels Extra labels to apply to all resources",
             "type": "object"

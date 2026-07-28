@@ -171,6 +171,15 @@ extraLabels: {}
 # extraLabels:
 #   testing: 123
 
+# -- extraInitContainers Specify any extra list of additional initContainers for the MapLarge pod
+# @section -- General
+extraInitContainers: []
+# Example:
+#   extraInitContainers:
+#   - name: setup-trust
+#     image: some/image:tag
+#     command: ["sh", "-c", "..."]
+
 # -- extraVolumes Specify any extra list of additional volumes for MapLarge
 # @section -- General
 extraVolumes: []
