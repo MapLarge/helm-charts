@@ -59,6 +59,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | clusterConfig | object | `nil` | Extra configuration options for cluster.json. Keys set here win over the chart-generated defaults. When replicas < 3, the chart defaults ChangeSetReplicationFactor to 1 so MapLarge does not warn about unmet replication criteria; set it here to override. |
+| extraInitContainers | list | `[]` | extraInitContainers Specify any extra list of additional initContainers for the MapLarge pod |
 | extraLabels | map | `{}` | extraLabels Extra labels to apply to all resources |
 | extraObjects | list | `[]` | A list of extra Kubernetes manifests to render. Entries may be objects or strings; strings are passed through tpl for templating. |
 | extraVolumeMounts | list | `[]` | extraVolumeMounts Specify any extra list of additional volumeMounts for MapLarge |
