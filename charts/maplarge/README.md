@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 4.0.0](https://img.shields.io/badge/Version-4.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 4.135](https://img.shields.io/badge/AppVersion-4.135-informational?style=flat-square)
+![Version: 4.0.0](https://img.shields.io/badge/Version-4.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 ## Additional Information
 
@@ -80,8 +80,8 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | requireNodeAntiAffinity | bool | `false` | Set to true if you want to REQUIRE that your replicas are placed on different nodes. Recommended for production; left off by default so small/single-node clusters can schedule all replicas. |
 | securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | Sets the container securityContext. Defaults block privilege escalation, drop all capabilities, and mount the root filesystem read-only (/tmp is an emptyDir; App_Data is the PVC). Set to {} to fall back to cluster defaults. |
 | serviceAccount.annotations | object | `{}` | Specifies Service Account specific Annotations |
-| serviceAccount.create | bool | `false` | Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false. |
-| serviceAccount.name | string | `""` | To use an existing service account, provide the name here. If not set and create is true, a name is generated using the maplarge.name template. |
+| serviceAccount.create | bool | `true` | Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false and an existing service account provided via name. |
+| serviceAccount.name | string | `""` | To use an existing service account, provide the name here. If not set and create is true, the release fullname is used (maplarge.fullname template). |
 | simpleNodeAffinityPreferences | list | `[]` | Sets simple node affinity preferences for the MapLarge pod |
 | simpleNodeAffinityRequirements | list | `[]` | Sets the simpleNodeAffinityRequirements for the pod |
 | simpleTolerations | list | `[]` | Sets a simple toleration for the MapLarge pod |
@@ -118,7 +118,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | image.pullSecretName | string | `""` | Secret to create or use to pull the docker image from the registry. Leave empty if the cluster can pull without one. |
 | image.repository | string | `"docker.io/maplarge/server"` | The fully qualified repository where the MapLarge image should be pulled from |
-| image.tag | string | `""` | The MapLarge image tag to pull. When empty, defaults to the release tag for the chart's appVersion (release-core-<appVersion>). |
+| image.tag | string | `"release-core-4.135"` | The MapLarge image tag to pull. Defaults to the MapLarge release this chart version was tested against; pin your own tag if you deploy a different build. |
 
 ### License
 
