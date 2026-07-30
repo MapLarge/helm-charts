@@ -47,4 +47,30 @@ jobs:
         run: ct lint --target-branch "$DEFAULT_BRANCH" --validate-maintainers=false
 
       - name: Run helm template
-        run: helm template charts/maplarge --set image.tag=latest
+        run: helm template charts/maplarge
+
+      # values.schema.json must reject the known-invalid fixture; if this
+      # passes, the schema has lost constraints (e.g. a bad regeneration)
+      - name: Verify schema rejects invalid values
+        run: |
+          if helm template charts/maplarge -f charts/maplarge/tests/schema-rejects.yaml > /dev/null 2>&1; then
+            echo "ERROR: tests/schema-rejects.yaml passed schema validation but every value in it is invalid"
+            exit 1
+          fi
+          echo "Schema correctly rejects invalid values"
+
+  # Scans the rendered chart for security misconfigurations. Accepted findings
+  # are documented with justifications in charts/maplarge/.trivyignore.
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+
+      - name: Run Trivy config scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: config
+          scan-ref: charts/maplarge
+          trivyignores: charts/maplarge/.trivyignore
+          exit-code: '1'

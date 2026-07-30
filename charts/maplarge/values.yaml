@@ -2,27 +2,27 @@
 # 1. App information             #
 ##################################
 
-image:
+image:  # @schema additionalProperties: false
   # -- Image pull policy
   # @section -- Image Information
-  pullPolicy: IfNotPresent
-  # -- Secret to create or use to pull the docker image from the registry
+  pullPolicy: IfNotPresent  # @schema enum: [Always, IfNotPresent, Never]
+  # -- Secret to create or use to pull the docker image from the registry. Leave empty if the cluster can pull without one.
   # @section -- Image Information
-  pullSecretName: maplarge-dockerhub-pull-secret
+  pullSecretName: ""  # @schema type: [string, null]
   # -- An array of any extra image pull secrets to add to the pod definition, in
   # @section -- Image Information
-  extraPullSecrets: []
+  extraPullSecrets: []  # @schema item: object
   # Example:
   # extraPullSecrets
   #   - name: my-pull-secret
   # -- The fully qualified repository where the MapLarge image should be pulled from
   # @section -- Image Information
-  repository: docker.io/maplarge/server-netcore-dev
-  # -- The MapLarge image tag to pull
+  repository: docker.io/maplarge/server  # @schema minLength: 1
+  # -- The MapLarge image tag to pull. Defaults to the MapLarge release this chart version was tested against; pin your own tag if you deploy a different build.
   # @section -- Image Information
-  tag: latest
+  tag: release-core-4.135  # @schema minLength: 1 ; required: true
 
-license:
+license:  # @schema additionalProperties: false
   # -- A secret name for an existing license secret. If creating your own license secret, the key must be "_maplarge_license.lic"
   # @section -- License
   existingSecretName: ""
@@ -35,13 +35,33 @@ license:
 
 # -- replicas The number of replicas to create in the StatefulSet. Defaults to 1.
 # @section -- General
-replicas: 3
+replicas: 3  # @schema minimum: 1
+
+# -- Overrides the chart name used to name resources
+# @section -- General
+nameOverride:  # @schema type: [string, null]
+
+# -- Overrides the fully qualified app name used to name resources
+# @section -- General
+fullnameOverride:  # @schema type: [string, null]
+
+# -- When set, adds team ownership labels (maplarge.com/project, team, app.kubernetes.io/owner) to all resources
+# @section -- General
+team:  # @schema type: [string, null]
 
 # When set to `true`, `config.json` will be saved to `App_Data/config`.
 # When set to `false`, all configuation must be set by environment variables, mapped from a `ConfigMap` or otherwise managed by the administrator and mounted to the location `/opt/maplarge/config/config.json` (by default)
 # -- persistConfiguration Determines how MapLarge configurations are to be persisted in the deployment
 # @ignore
 persistConfiguration: false
+
+# -- configurationDirectory Overrides the directory in the container where MapLarge configuration is mounted. Defaults to /opt/maplarge/config
+# @ignore
+configurationDirectory:  # @schema type: [string, null]
+
+# -- initContainerImage Overrides the image used for init containers. Defaults to busybox:1.28
+# @ignore
+initContainerImage:  # @schema type: [string, null]
 # -- podAnnotations Extra annotations to add to your pods' metadata. Usually unnecessary.
 # @section -- General
 podAnnotations: {}
@@ -50,70 +70,88 @@ podAnnotations: {}
 
 # Limits are enforced by Kubernetes. If you exceed memory limit, your container may be killed without warning.
 # Requests must be less than or equal to limits. Usually set them equal to limits.
-resources:
-  limits:
+resources:  # @schema additionalProperties: false
+  limits:  # @schema additionalProperties: false
     # -- The CPU Limit to set for the pod
     # @section -- Deployment Resources
-    cpu: 4
+    cpu: 4  # @schema type: [string, integer]
     # -- The Memory Limit to set for the pod
     # @section -- Deployment Resources
-    memory: 8Gi
-  requests:
+    memory: 8Gi  # @schema type: [string, integer]
+  requests:  # @schema additionalProperties: false
     # -- The CPU Request to set for the pod
     # @section -- Deployment Resources
-    cpu: 1
+    cpu: 1  # @schema type: [string, integer]
     # -- The Memory Request to set for the pod
     # @section -- Deployment Resources
-    memory: 4Gi
+    memory: 4Gi  # @schema type: [string, integer]
 
-# -- appDataVolumeSizeInGB Requested size of PVC to be created.
-# @section -- Storage Information
-appDataVolumeSizeInGB: 100
+# Storage options for the App_Data PVC attached to each replica.
+storage:  # @schema additionalProperties: false
+  # -- Defines the size of the PVC to be attached. Values are in GB
+  # @section -- Storage Information
+  size: 100  # @schema minimum: 1
+  # -- Requested storage class name. When unset, the cluster's default storage class is used.
+  # @section -- Storage Information
+  storageClass:  # @schema type: [string, null]
 
-# -- appDataVolumeStorageClassName Requested storage class name.
-# @section -- Storage Information
-appDataVolumeStorageClassName: openebs-hostpath
 
 # -- If set, the root password will be set according to this value, otherwise a default value is created
 # @section -- MapLarge Configuration
-rootPassword:
+rootPassword:  # @schema type: [string, null]
 
 # -- If set, defines the name of the secret for the root password
 # @section -- MapLarge Configuration
-rootPasswordSecretName:
+rootPasswordSecretName:  # @schema type: [string, null]
 
 # -- An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword`
 # @section -- MapLarge Configuration
-existingRootPasswordSecretName:
+existingRootPasswordSecretName:  # @schema type: [string, null]
+
+# -- Enables CORS in the MapLarge client config (sets ML_CLIENT_CONFIG_ENABLE_CORS)
+# @section -- MapLarge Configuration
+corsEnabled: true
+
+# -- Allowed CORS origins (sets ML_CORS_ALLOWED_ORIGINS)
+# @section -- MapLarge Configuration
+corsAllowedOrigins: "%"
+
+# -- The MapLarge stderr log level (sets ML_STDERR_LOG_LEVEL). Set to null to omit the env var.
+# @section -- MapLarge Configuration
+stderrLogLevel: "2"  # @schema type: [string, null]
+
+# -- Redirect target for the homepage (sets ml_cfg_homepageRedirect). Set to null to omit the env var.
+# @section -- MapLarge Configuration
+homepageRedirect: dashboard  # @schema type: [string, null]
 
 # Some MapLarge configurations can be controlled via environment variables. These
-# can be set here.
-# -- A map of extra environment variables to be added to the MapLarge container
+# can be set here. Entries use the full Kubernetes EnvVar schema (value or
+# valueFrom) and are appended after the chart-managed env vars, so an entry with
+# the same name as a chart-managed var wins.
+# -- A list of extra environment variables to be added to the MapLarge container
 # @section -- MapLarge Configuration
-environmentVariables:
-  - name: ML_STDERR_LOG_LEVEL
-    value: "2"
-  - name: ml_cfg_homepageRedirect
-    value: "dashboard"
+environmentVariables: []  # @schema item: object ; itemProperties: {"name": {"type": "string"}} ; allOf: [{"items": {"required": ["name"]}}]
 
 # -- Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line.
 # @section -- MapLarge Configuration
-jsjs:
-  value: |
+jsjs:  # @schema type: [string, null]
 
 # -- (object) Allows for custom configurations for the MapLarge config.json.
 # @section -- MapLarge Configuration
-config:
+config:  # @schema type: [object, null]
   # Used for an InitContainer when MapLarge Notebooks are enabled.
   # This can be changed to any image desired as the initContainers
   # are only running simple shell commands
   # workloadSchedulerScratchImage: "busybox"
 
-serviceAccount:
-  # -- Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false.
+# MapLarge must always run with a dedicated service account: either the chart
+# creates one (create: true) or an existing one is named. The anyOf below
+# rejects create: false with an empty name.
+serviceAccount:  # @schema additionalProperties: false ; anyOf: [{"properties": {"create": {"const": true}}, "required": ["create"]}, {"properties": {"name": {"type": "string", "minLength": 1}}, "required": ["name"]}]
+  # -- Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false and an existing service account provided via name.
   # @section -- General
-  create: false
-  # -- To use an existing service account, provide the name here. If not set and create is true, a name is generated using the maplarge.name template.
+  create: true
+  # -- To use an existing service account, provide the name here. If not set and create is true, the release fullname is used (maplarge.fullname template).
   # @section -- General
   name: ""
   # -- Specifies Service Account specific Annotations
@@ -123,11 +161,11 @@ serviceAccount:
 
 # -- Set to true if you want to prefer that your replicas are placed on distinct nodes.
 # @section -- General
-preferNodeAntiAffinity: false
+preferNodeAntiAffinity: true
 
-# -- Set to true if you want to REQUIRE that your replicas are placed on different nodes.
+# -- Set to true if you want to REQUIRE that your replicas are placed on different nodes. Recommended for production; left off by default so small/single-node clusters can schedule all replicas.
 # @section -- General
-requireNodeAntiAffinity: true
+requireNodeAntiAffinity: false
 
 # -- (map) extraLabels Extra labels to apply to all resources
 # @section -- General
@@ -135,6 +173,15 @@ extraLabels: {}
 # Example:
 # extraLabels:
 #   testing: 123
+
+# -- extraInitContainers Specify any extra list of additional initContainers for the MapLarge pod
+# @section -- General
+extraInitContainers: []
+# Example:
+#   extraInitContainers:
+#   - name: setup-trust
+#     image: some/image:tag
+#     command: ["sh", "-c", "..."]
 
 # -- extraVolumes Specify any extra list of additional volumes for MapLarge
 # @section -- General
@@ -156,31 +203,35 @@ extraVolumeMounts: []
 
 # --  JSON object used to pre-populate intercluster sync settings
 # @ignore
-interClusterConfigJson:
+interClusterConfigJson:  # @schema type: [string, null]
 
-# -- (object) Extra configuration options for cluster.json
+# -- (object) Extra configuration options for cluster.json. Keys set here win over the chart-generated defaults. When replicas < 3, the chart defaults ChangeSetReplicationFactor to 1 so MapLarge does not warn about unmet replication criteria; set it here to override.
 # @section -- General
-clusterConfig:
+clusterConfig:  # @schema type: [object, null]
 
-# -- useTransactionalDatabase NEED DEFINITION
+# -- numberOfAutoJoinMembers Overrides the number of StatefulSet members listed in AutoJoinCoreClusterMembers in cluster.json. Defaults to replicas.
 # @ignore
-useTransactionalDatabase: true
+numberOfAutoJoinMembers:  # @schema type: [integer, null] ; minimum: 1
 
 # -- updateStrategyType RollingUpdate (default) or OnDelete (will only update when you delete pod)
 # @ignore
-updateStrategyType: RollingUpdate
+updateStrategyType: RollingUpdate  # @schema enum: [RollingUpdate, OnDelete]
 
 # -- podManagementPolicy Parallel (default) or OrderedReady
 # @ignore
-podManagementPolicy: Parallel
+podManagementPolicy: Parallel  # @schema enum: [Parallel, OrderedReady]
 
 # -- revisionHistoryLimit
 # @ignore
-revisionHistoryLimit: 10
+revisionHistoryLimit: 10  # @schema minimum: 0
+
+# -- rollingUpdatePartition When set, adds a rollingUpdate partition of 0 to the update strategy
+# @ignore
+rollingUpdatePartition:  # @schema type: [boolean, integer, null]
 
 # -- terminationGracePeriodSeconds How long to wait for graceful exit
 # @ignore
-terminationGracePeriodSeconds: 120
+terminationGracePeriodSeconds: 120  # @schema minimum: 0
 
 # -- terminationMessagePath
 # @ignore
@@ -198,7 +249,7 @@ simpleTolerations: []
 
 # -- Sets the tolerations for the MapLarge pod
 # @section -- General
-tolerations: {}
+tolerations: []  # @schema item: object
 
 # -- Sets simple node affinity preferences for the MapLarge pod
 # @section -- General
@@ -224,45 +275,35 @@ simpleNodeAffinityRequirements: []
 # @section -- General
 nodeAffinityRequirements: []
 
-# --  Sets the podSecurityContext
+# -- Sets the podSecurityContext. Defaults run the pod as a non-root user with a RuntimeDefault seccomp profile. Set to {} to fall back to cluster defaults.
 # @section -- General
-podSecurityContext: {}
-# Example:
-#   runAsUser: 1000
-#   runAsGroup: 3000
-#   fsGroup: 2000
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 30101
+  runAsGroup: 30102
+  fsGroup: 30102
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile:
+    type: RuntimeDefault
 
 
-# --  Sets the securityContext
+# -- Sets the container securityContext. Defaults block privilege escalation, drop all capabilities, and mount the root filesystem read-only (/tmp is an emptyDir; App_Data is the PVC). Set to {} to fall back to cluster defaults.
 # @section -- General
-securityContext: {}
-# Example:
-#   capabilities:
-#     add: ["NET_ADMIN", "SYS_TIME"]
-#   allowPrivilegeEscalation: false
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
 
-# -- this will create your pull secret for you. Required fields are registry, username, password, and email
-# @section -- Docker configurations
-dockerCredentials: {}
-# Example:
-#   registry: docker.io
-#   username: dockerhubusername
-#   password: dockerhubpassword
-#   email: dockerhub@emailaddress.com
-
-
+# Probe httpGet port and scheme are derived from tls.enabled (http/HTTP, or
+# https/HTTPS when TLS is on). Set httpGet.port / httpGet.scheme explicitly on
+# any probe to override the derived values.
 # This configuration allows the pod ten seconds to sixty minutes to become ready on startup.
 startupProbe:
   # -- Endpoint for the startup probe
   # @section -- Probe Configurations
   httpGet:
     path: /Cluster/IsReady
-    # -- Port for the startup probe
-    # @section -- Probe Configurations
-    port: "http"
-    # -- Scheme for the startup probe
-    # @section -- Probe Configurations
-    scheme: HTTP
   # -- Failure threshold for startupProbe
   # @section -- Probe Configurations
   failureThreshold: 360
@@ -275,12 +316,6 @@ livenessProbe:
     # -- Endpoint for the livenessProbe
     # @section -- Probe Configurations
     path: /Cluster/IsAlive
-    # -- Port for the livenessProbe
-    # @section -- Probe Configurations
-    port: "http"
-    # -- Scheme for the livenessProbe
-    # @section -- Probe Configurations
-    scheme: HTTP
   # -- Failure threshold for livenessProbe
   # @section -- Probe Configurations
   failureThreshold: 6
@@ -302,12 +337,6 @@ readinessProbe:
     # -- Endpoint for the readinessProbe
     # @section -- Probe Configurations
     path: /Cluster/IsReadyForUser
-    # -- Port for the readinessProbe
-    # @section -- Probe Configurations
-    port: "http"
-    # -- Scheme for the readinessProbe
-    # @section -- Probe Configurations
-    scheme: HTTP
   # -- Failure threshold for readinessProbe
   # @section -- Probe Configurations
   failureThreshold: 3
@@ -325,7 +354,7 @@ readinessProbe:
   timeoutSeconds: 2
 
 
-notebooks:
+notebooks:  # @schema additionalProperties: false
   # -- Enables MapLarge Notebooks and creates the necessary Service Account, Role and RoleBinding
   # @section -- Notebook configurations
   enabled: false
@@ -336,90 +365,99 @@ notebooks:
 # -- preloadMLData.image.repository The docker image containing the preload data required
 # -- preloadMLData.image.tag The docker tag of the image preload docker image
 # @ignore
-preloadMLData:
+preloadMLData:  # @schema additionalProperties: false
   enabled: false
-  image:
-    pullPolicy: IfNotPresent
-    repository: docker.io/maplarge/data-snapshots
-    tag: 1-3-2022_4_10
+  image:  # @schema additionalProperties: false
+    pullPolicy: IfNotPresent  # @schema enum: [Always, IfNotPresent, Never]
+    repository: docker.io/maplarge/data-snapshots  # @schema minLength: 1
+    tag: 1-3-2022_4_10  # @schema minLength: 1
 
-service:
-  # -- If the MapLarge container is configured to serve requests on a port other than 80, define it here
-  # @section -- General
-  targetPort: 80
-  # -- Annotations to be added to the Service Object
+# -- The port the MapLarge container listens on. The chart passes it to the app via ML_LISTEN_PORT and uses it for the container port, the headless Service port, and cluster.json URLs. When unset, defaults to 8443 if tls.enabled is true, otherwise 8080. Must be >= 1024: the container runs as non-root without NET_BIND_SERVICE, so it cannot bind privileged ports.
+# @section -- General
+listenPort:  # @schema type: [integer, null] ; minimum: 1024 ; maximum: 65535
+
+headlessService:  # @schema additionalProperties: false
+  # -- Annotations to be added to the headless (cluster DNS) Service
   # @section -- General
   annotations: {}
 
-# Enables LTE ports and LoadBalancer, and specifies a MetalLB address pool to use
-# @ignore
-lte:
+loadBalancerService:  # @schema additionalProperties: false
+  # -- The in-cluster port the load balancer Service exposes. When unset, defaults to 443 if tls.enabled is true, otherwise 80. The ingress references this port by name, so changing it requires no ingress changes.
+  # @section -- General
+  port:  # @schema type: [integer, null] ; minimum: 1 ; maximum: 65535
+  # -- Annotations to be added to the load balancer Service
+  # @section -- General
+  annotations: {}
+
+tls:  # @schema additionalProperties: false
+  # -- Set to true if the MapLarge container is configured to serve HTTPS. The chart then defaults the listen port to 8443 (Service port 443), names ports https so meshes detect the protocol, uses https for inter-node cluster communication, and probes over HTTPS. The app itself must be configured to serve TLS; this is distinct from ingress.hosts[].tls, which controls TLS at the ingress edge.
+  # @section -- General
   enabled: false
-  metalLbAddressPool: "default"
-  # Options Cluster or Local https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
-  # Cluster has better loadbalancing but the client IP address is hidden from app, but for LTE services it is usually
-  # more desirable to get the client's IP address
-  trafficPolicy: Local
 
 # -- Rarely there is a time when you need to set the MapLarge hostname to something other than the ingress hostname, but if you do have that scenario, you can provide a hostname here to override the value that will be derived from the ingress.hosts[0].basehostname. Note, this does not modify the ingress hostname value.
 # @section -- Ingress Configuration
-hostnameOverride:
+hostnameOverride:  # @schema type: [string, null]
 
 
 # Specifies an authentication plugin
-authPlugin:
+authPlugin:  # @schema additionalProperties: false
   # -- Determines if the authPlugin should be enabled
   # @section -- MapLarge Configuration
   enabled: false
   # -- Specifies the MapLarge authPlugin to use
   # @section -- MapLarge Configuration
-  typeName:
+  typeName:  # @schema type: [string, null]
   # -- Specifices the path in the container where the authPlugin configuration file can be found. Can be left blank.
   # @section -- MapLarge Configuration
-  filename:
+  filename:  # @schema type: [string, null]
+  # -- Custom configuration for the authentication plugin
+  # @section -- MapLarge Configuration
+  config:  # @schema type: [object, string, null]
 
-ingress:
+ingress:  # @schema additionalProperties: false
   # -- Enable ingress object
   # @section -- Ingress Configuration
   enabled: true
   # -- Ingress class to use. If not set, no ingressClassName will be set on the resource.
   # @section -- Ingress Configuration
-  class: ""
+  class: ""  # @schema type: [string, null]
   # -- Annotations to set on the ingress object. No annotations are set by default;
   # add any ingress controller-specific annotations here as needed.
   # @section -- Ingress Configuration
-  annotations: {}
-  hosts:
+  annotations: {}  # @schema additionalProperties: {"type": "string"}
+  hosts:  # @schema minItems: 1 ; allOf: [{"items": {"propertyNames": {"enum": ["baseHostname", "prefixes", "tls"]}}}]
     # Usually you only need one host here, but this is an array field and accepts multiple values.
     # -- Custom DNS name where MapLarge can be reached
     # @section -- Ingress Configuration
-    - baseHostname: customer-a.dev.maplarge.net
+    - baseHostname: maplarge.example.com  # @schema required: true ; minLength: 1
     # -- The number of dns prefixes to create
     # @section -- Ingress Configuration
-      prefixes: 8
-      tls:
+      prefixes: 8  # @schema minimum: 0
+      tls:  # @schema additionalProperties: false
         # -- Controls if the site is TLS protected
         # @section -- Ingress Configuration
-        enabled: true
+        enabled: false
         # -- The TLS secret to use if TLS protected
         # @section -- Ingress Configuration
-        secretName: wildcard-dev-maplarge-net-tls-secret
+        secretName:  # @schema type: [string, null]
 
-hooks:
+hooks:  # @schema additionalProperties: false
   # -- Enables pre-upgrade hook to ensure proper upgrade procedure for DB binary format revisions
   # @section -- Hooks
-  preUpgradeHook:
+  preUpgradeHook:  # @schema additionalProperties: false
     enabled: true
-    image:
+    image:  # @schema additionalProperties: false
       # -- The image repository to use for the pre-upgrade hook job
       # @section -- Hooks
-      repository: bitnami/kubectl
+      repository: bitnami/kubectl  # @schema minLength: 1
       # -- The image tag to use for the pre-upgrade hook job.
       # @section -- Hooks
-      tag: "latest"
+      tag: "latest"  # @schema minLength: 1
 
 # extraObjects could be utilized to add dynamic manifests via values
-extraObjects: []
+# -- A list of extra Kubernetes manifests to render. Entries may be objects or strings; strings are passed through tpl for templating.
+# @section -- General
+extraObjects: []  # @schema item: [object, string]
 # Examples:
 # extraObjects:
 # - apiVersion: external-secrets.io/v1

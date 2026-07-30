@@ -1,0 +1,12 @@
+# Config for helm-values-schema-json (https://github.com/losisin/helm-values-schema-json)
+# values.schema.json is GENERATED from values.yaml — do not edit it by hand.
+# Constraints live in `# @schema` comments in values.yaml; descriptions come
+# from the helm-docs `# --` comments. Regenerate with: helm schema
+values:
+  - values.yaml
+output: values.schema.json
+draft: 2020
+indent: 4
+useHelmDocs: true
+schemaRoot:
+  additionalProperties: false

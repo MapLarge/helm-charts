@@ -1,0 +1,810 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+        "authPlugin": {
+            "type": "object",
+            "properties": {
+                "config": {
+                    "description": "Custom configuration for the authentication plugin",
+                    "type": [
+                        "object",
+                        "string",
+                        "null"
+                    ]
+                },
+                "enabled": {
+                    "description": "Determines if the authPlugin should be enabled",
+                    "type": "boolean"
+                },
+                "filename": {
+                    "description": "Specifices the path in the container where the authPlugin configuration file can be found. Can be left blank.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "typeName": {
+                    "description": "Specifies the MapLarge authPlugin to use",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "clusterConfig": {
+            "description": "Extra configuration options for cluster.json. Keys set here win over the chart-generated defaults. When replicas \u003c 3, the chart defaults ChangeSetReplicationFactor to 1 so MapLarge does not warn about unmet replication criteria; set it here to override.",
+            "type": [
+                "object",
+                "null"
+            ]
+        },
+        "config": {
+            "description": "Allows for custom configurations for the MapLarge config.json.",
+            "type": [
+                "object",
+                "null"
+            ]
+        },
+        "configurationDirectory": {
+            "description": "configurationDirectory Overrides the directory in the container where MapLarge configuration is mounted. Defaults to /opt/maplarge/config @ignore",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "corsAllowedOrigins": {
+            "description": "Allowed CORS origins (sets ML_CORS_ALLOWED_ORIGINS)",
+            "type": "string"
+        },
+        "corsEnabled": {
+            "description": "Enables CORS in the MapLarge client config (sets ML_CLIENT_CONFIG_ENABLE_CORS)",
+            "type": "boolean"
+        },
+        "environmentVariables": {
+            "description": "A list of extra environment variables to be added to the MapLarge container",
+            "allOf": [
+                {
+                    "items": {
+                        "required": [
+                            "name"
+                        ]
+                    }
+                }
+            ],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "existingRootPasswordSecretName": {
+            "description": "An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword`",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "extraInitContainers": {
+            "description": "extraInitContainers Specify any extra list of additional initContainers for the MapLarge pod",
+            "type": "array"
+        },
+        "extraLabels": {
+            "description": "extraLabels Extra labels to apply to all resources",
+            "type": "object"
+        },
+        "extraObjects": {
+            "description": "A list of extra Kubernetes manifests to render. Entries may be objects or strings; strings are passed through tpl for templating.",
+            "type": "array",
+            "items": {
+                "type": [
+                    "object",
+                    "string"
+                ]
+            }
+        },
+        "extraVolumeMounts": {
+            "description": "extraVolumeMounts Specify any extra list of additional volumeMounts for MapLarge",
+            "type": "array"
+        },
+        "extraVolumes": {
+            "description": "extraVolumes Specify any extra list of additional volumes for MapLarge",
+            "type": "array"
+        },
+        "fullnameOverride": {
+            "description": "Overrides the fully qualified app name used to name resources",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "global": {
+            "description": "Global values shared between all subcharts",
+            "$comment": "Added automatically by 'helm schema' to allow this chart to be used as a Helm dependency, as the `additionalProperties` setting would otherwise collide with Helm's special 'global' values key.",
+            "type": [
+                "object",
+                "null"
+            ]
+        },
+        "headlessService": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "description": "Annotations to be added to the headless (cluster DNS) Service",
+                    "type": "object"
+                }
+            },
+            "additionalProperties": false
+        },
+        "homepageRedirect": {
+            "description": "Redirect target for the homepage (sets ml_cfg_homepageRedirect). Set to null to omit the env var.",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "hooks": {
+            "type": "object",
+            "properties": {
+                "preUpgradeHook": {
+                    "description": "Enables pre-upgrade hook to ensure proper upgrade procedure for DB binary format revisions",
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "image": {
+                            "type": "object",
+                            "properties": {
+                                "repository": {
+                                    "description": "The image repository to use for the pre-upgrade hook job",
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "tag": {
+                                    "description": "The image tag to use for the pre-upgrade hook job.",
+                                    "type": "string",
+                                    "minLength": 1
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "hostnameOverride": {
+            "description": "Rarely there is a time when you need to set the MapLarge hostname to something other than the ingress hostname, but if you do have that scenario, you can provide a hostname here to override the value that will be derived from the ingress.hosts[0].basehostname. Note, this does not modify the ingress hostname value.",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "image": {
+            "type": "object",
+            "required": [
+                "tag"
+            ],
+            "properties": {
+                "extraPullSecrets": {
+                    "description": "An array of any extra image pull secrets to add to the pod definition, in",
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "pullPolicy": {
+                    "description": "Image pull policy",
+                    "type": "string",
+                    "enum": [
+                        "Always",
+                        "IfNotPresent",
+                        "Never"
+                    ]
+                },
+                "pullSecretName": {
+                    "description": "Secret to create or use to pull the docker image from the registry. Leave empty if the cluster can pull without one.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "repository": {
+                    "description": "The fully qualified repository where the MapLarge image should be pulled from",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "tag": {
+                    "description": "The MapLarge image tag to pull. Defaults to the MapLarge release this chart version was tested against; pin your own tag if you deploy a different build.",
+                    "type": "string",
+                    "minLength": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "ingress": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "description": "Annotations to set on the ingress object. No annotations are set by default; add any ingress controller-specific annotations here as needed.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "class": {
+                    "description": "Ingress class to use. If not set, no ingressClassName will be set on the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "enabled": {
+                    "description": "Enable ingress object",
+                    "type": "boolean"
+                },
+                "hosts": {
+                    "allOf": [
+                        {
+                            "items": {
+                                "propertyNames": {
+                                    "enum": [
+                                        "baseHostname",
+                                        "prefixes",
+                                        "tls"
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "baseHostname"
+                        ],
+                        "properties": {
+                            "baseHostname": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "prefixes": {
+                                "description": "The number of dns prefixes to create",
+                                "type": "integer",
+                                "minimum": 0
+                            },
+                            "tls": {
+                                "type": "object",
+                                "properties": {
+                                    "enabled": {
+                                        "description": "Controls if the site is TLS protected",
+                                        "type": "boolean"
+                                    },
+                                    "secretName": {
+                                        "description": "The TLS secret to use if TLS protected",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "initContainerImage": {
+            "description": "initContainerImage Overrides the image used for init containers. Defaults to busybox:1.28 @ignore",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "interClusterConfigJson": {
+            "description": "JSON object used to pre-populate intercluster sync settings @ignore",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "jsjs": {
+            "description": "Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line.",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "license": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "description": "Annotations to set on the license secret",
+                    "type": "object"
+                },
+                "existingSecretName": {
+                    "description": "A secret name for an existing license secret. If creating your own license secret, the key must be \"_maplarge_license.lic\"",
+                    "type": "string"
+                },
+                "license": {
+                    "description": "The content of the MapLarge license if one has been provided to you",
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "listenPort": {
+            "description": "The port the MapLarge container listens on. The chart passes it to the app via ML_LISTEN_PORT and uses it for the container port, the headless Service port, and cluster.json URLs. When unset, defaults to 8443 if tls.enabled is true, otherwise 8080. Must be \u003e= 1024: the container runs as non-root without NET_BIND_SERVICE, so it cannot bind privileged ports.",
+            "type": [
+                "integer",
+                "null"
+            ],
+            "maximum": 65535,
+            "minimum": 1024
+        },
+        "livenessProbe": {
+            "type": "object",
+            "properties": {
+                "failureThreshold": {
+                    "description": "Failure threshold for livenessProbe",
+                    "type": "integer"
+                },
+                "httpGet": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "description": "Endpoint for the livenessProbe",
+                            "type": "string"
+                        }
+                    }
+                },
+                "initialDelaySeconds": {
+                    "description": "Initial delay seconds for livenessProbe",
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "description": "Period seconds for livenessProbe",
+                    "type": "integer"
+                },
+                "successThreshold": {
+                    "description": "Success Threshold for livenessProbe",
+                    "type": "integer"
+                },
+                "timeoutSeconds": {
+                    "description": "Timeout seconds for livenessProbe",
+                    "type": "integer"
+                }
+            }
+        },
+        "loadBalancerService": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "description": "Annotations to be added to the load balancer Service",
+                    "type": "object"
+                },
+                "port": {
+                    "description": "The in-cluster port the load balancer Service exposes. When unset, defaults to 443 if tls.enabled is true, otherwise 80. The ingress references this port by name, so changing it requires no ingress changes.",
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "maximum": 65535,
+                    "minimum": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "nameOverride": {
+            "description": "Overrides the chart name used to name resources",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "nodeAffinityPreferences": {
+            "description": "Sets the node affinity preferences for the MapLarge pod",
+            "type": "array"
+        },
+        "nodeAffinityRequirements": {
+            "description": "Sets the nodeAffinityRequirements for the pod",
+            "type": "array"
+        },
+        "nodeSelector": {
+            "description": "Sets the node selector for the MapLarge pod",
+            "type": "object"
+        },
+        "notebooks": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "description": "Enables MapLarge Notebooks and creates the necessary Service Account, Role and RoleBinding",
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        },
+        "numberOfAutoJoinMembers": {
+            "description": "numberOfAutoJoinMembers Overrides the number of StatefulSet members listed in AutoJoinCoreClusterMembers in cluster.json. Defaults to replicas. @ignore",
+            "type": [
+                "integer",
+                "null"
+            ],
+            "minimum": 1
+        },
+        "persistConfiguration": {
+            "description": "persistConfiguration Determines how MapLarge configurations are to be persisted in the deployment @ignore",
+            "type": "boolean"
+        },
+        "podAnnotations": {
+            "description": "podAnnotations Extra annotations to add to your pods' metadata. Usually unnecessary.",
+            "type": "object"
+        },
+        "podManagementPolicy": {
+            "description": "podManagementPolicy Parallel (default) or OrderedReady @ignore",
+            "type": "string",
+            "enum": [
+                "Parallel",
+                "OrderedReady"
+            ]
+        },
+        "podSecurityContext": {
+            "description": "Sets the podSecurityContext. Defaults run the pod as a non-root user with a RuntimeDefault seccomp profile. Set to {} to fall back to cluster defaults.",
+            "type": "object",
+            "properties": {
+                "fsGroup": {
+                    "type": "integer"
+                },
+                "fsGroupChangePolicy": {
+                    "type": "string"
+                },
+                "runAsGroup": {
+                    "type": "integer"
+                },
+                "runAsNonRoot": {
+                    "type": "boolean"
+                },
+                "runAsUser": {
+                    "type": "integer"
+                },
+                "seccompProfile": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "preferNodeAntiAffinity": {
+            "description": "Set to true if you want to prefer that your replicas are placed on distinct nodes.",
+            "type": "boolean"
+        },
+        "preloadMLData": {
+            "description": "preloadMLData.enabled Enables MapLarge to preload data from a remote docker image @ignore",
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "pullPolicy": {
+                            "type": "string",
+                            "enum": [
+                                "Always",
+                                "IfNotPresent",
+                                "Never"
+                            ]
+                        },
+                        "repository": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "tag": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "readinessProbe": {
+            "type": "object",
+            "properties": {
+                "failureThreshold": {
+                    "description": "Failure threshold for readinessProbe",
+                    "type": "integer"
+                },
+                "httpGet": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "description": "Endpoint for the readinessProbe",
+                            "type": "string"
+                        }
+                    }
+                },
+                "initialDelaySeconds": {
+                    "description": "Initial delay seconds for readinessProbe",
+                    "type": "integer"
+                },
+                "periodSeconds": {
+                    "description": "Period seconds for readinessProbe",
+                    "type": "integer"
+                },
+                "successThreshold": {
+                    "description": "Success Threshold for readinessProbe",
+                    "type": "integer"
+                },
+                "timeoutSeconds": {
+                    "description": "Timeout seconds for readinessProbe",
+                    "type": "integer"
+                }
+            }
+        },
+        "replicas": {
+            "description": "replicas The number of replicas to create in the StatefulSet. Defaults to 1.",
+            "type": "integer",
+            "minimum": 1
+        },
+        "requireNodeAntiAffinity": {
+            "description": "Set to true if you want to REQUIRE that your replicas are placed on different nodes. Recommended for production; left off by default so small/single-node clusters can schedule all replicas.",
+            "type": "boolean"
+        },
+        "resources": {
+            "type": "object",
+            "properties": {
+                "limits": {
+                    "type": "object",
+                    "properties": {
+                        "cpu": {
+                            "description": "The CPU Limit to set for the pod",
+                            "type": [
+                                "string",
+                                "integer"
+                            ]
+                        },
+                        "memory": {
+                            "description": "The Memory Limit to set for the pod",
+                            "type": [
+                                "string",
+                                "integer"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "requests": {
+                    "type": "object",
+                    "properties": {
+                        "cpu": {
+                            "description": "The CPU Request to set for the pod",
+                            "type": [
+                                "string",
+                                "integer"
+                            ]
+                        },
+                        "memory": {
+                            "description": "The Memory Request to set for the pod",
+                            "type": [
+                                "string",
+                                "integer"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "revisionHistoryLimit": {
+            "description": "revisionHistoryLimit @ignore",
+            "type": "integer",
+            "minimum": 0
+        },
+        "rollingUpdatePartition": {
+            "description": "rollingUpdatePartition When set, adds a rollingUpdate partition of 0 to the update strategy @ignore",
+            "type": [
+                "boolean",
+                "integer",
+                "null"
+            ]
+        },
+        "rootPassword": {
+            "description": "If set, the root password will be set according to this value, otherwise a default value is created",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "rootPasswordSecretName": {
+            "description": "If set, defines the name of the secret for the root password",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "securityContext": {
+            "description": "Sets the container securityContext. Defaults block privilege escalation, drop all capabilities, and mount the root filesystem read-only (/tmp is an emptyDir; App_Data is the PVC). Set to {} to fall back to cluster defaults.",
+            "type": "object",
+            "properties": {
+                "allowPrivilegeEscalation": {
+                    "type": "boolean"
+                },
+                "capabilities": {
+                    "type": "object",
+                    "properties": {
+                        "drop": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "readOnlyRootFilesystem": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "serviceAccount": {
+            "anyOf": [
+                {
+                    "required": [
+                        "create"
+                    ],
+                    "properties": {
+                        "create": {
+                            "const": true
+                        }
+                    }
+                },
+                {
+                    "required": [
+                        "name"
+                    ],
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                }
+            ],
+            "properties": {
+                "annotations": {
+                    "description": "Specifies Service Account specific Annotations",
+                    "type": "object"
+                },
+                "create": {
+                    "description": "Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false and an existing service account provided via name.",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "To use an existing service account, provide the name here. If not set and create is true, the release fullname is used (maplarge.fullname template).",
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "simpleNodeAffinityPreferences": {
+            "description": "Sets simple node affinity preferences for the MapLarge pod",
+            "type": "array"
+        },
+        "simpleNodeAffinityRequirements": {
+            "description": "Sets the simpleNodeAffinityRequirements for the pod",
+            "type": "array"
+        },
+        "simpleTolerations": {
+            "description": "Sets a simple toleration for the MapLarge pod",
+            "type": "array"
+        },
+        "startupProbe": {
+            "type": "object",
+            "properties": {
+                "failureThreshold": {
+                    "description": "Failure threshold for startupProbe",
+                    "type": "integer"
+                },
+                "httpGet": {
+                    "description": "Endpoint for the startup probe",
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "periodSeconds": {
+                    "description": "Period seconds for startupProbe",
+                    "type": "integer"
+                }
+            }
+        },
+        "stderrLogLevel": {
+            "description": "The MapLarge stderr log level (sets ML_STDERR_LOG_LEVEL). Set to null to omit the env var.",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "storage": {
+            "type": "object",
+            "properties": {
+                "size": {
+                    "description": "Defines the size of the PVC to be attached. Values are in GB",
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "storageClass": {
+                    "description": "Requested storage class name. When unset, the cluster's default storage class is used.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "team": {
+            "description": "When set, adds team ownership labels (maplarge.com/project, team, app.kubernetes.io/owner) to all resources",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "terminationGracePeriodSeconds": {
+            "description": "terminationGracePeriodSeconds How long to wait for graceful exit @ignore",
+            "type": "integer",
+            "minimum": 0
+        },
+        "terminationMessagePath": {
+            "description": "terminationMessagePath @ignore",
+            "type": "string"
+        },
+        "terminationMessagePolicy": {
+            "description": "terminationMessagePolicy @ignore",
+            "type": "string"
+        },
+        "tls": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "description": "Set to true if the MapLarge container is configured to serve HTTPS. The chart then defaults the listen port to 8443 (Service port 443), names ports https so meshes detect the protocol, uses https for inter-node cluster communication, and probes over HTTPS. The app itself must be configured to serve TLS; this is distinct from ingress.hosts[].tls, which controls TLS at the ingress edge.",
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        },
+        "tolerations": {
+            "description": "Sets the tolerations for the MapLarge pod",
+            "type": "array",
+            "items": {
+                "type": "object"
+            }
+        },
+        "updateStrategyType": {
+            "description": "updateStrategyType RollingUpdate (default) or OnDelete (will only update when you delete pod) @ignore",
+            "type": "string",
+            "enum": [
+                "RollingUpdate",
+                "OnDelete"
+            ]
+        }
+    },
+    "additionalProperties": false
+}

@@ -1,0 +1,4 @@
+# Excluded from the packaged chart
+tests/
+.schema.yaml
+README.md.gotmpl

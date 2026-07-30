@@ -41,11 +41,18 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-The tag for MapLarge API Server
+The image tag for the MapLarge API Server. The default (the release this chart
+was tested against) is pinned in values.yaml; the schema requires it non-empty.
 */}}
+{{- define "maplarge.imageTag" -}}
+{{- .Values.image.tag }}
+{{- end }}
 
+{{/*
+The app version used for the app.kubernetes.io/version label
+*/}}
 {{- define "maplarge.image" -}}
-{{- include "dnsSafeTruncate" (default "4.5.0" .Values.image.tag) }}
+{{- include "dnsSafeTruncate" (include "maplarge.imageTag" .) }}
 {{- end }}
 
 {{/*
@@ -68,12 +75,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{/*
 Selector labels to point the load balancer service at the appropriate pods
-
-DEV-56 https://maplarge.atlassian.net/browse/DEV-56
 Removed app name from selector labels because now the app name is not going to be the same for all things in the Helm chart.
-
 */}}
-
 {{- define "maplarge.selectorLabels" -}}
   app.kubernetes.io/instance: {{ include "dnsSafeTruncate" (.Release.Name) }}
 {{- end }}
@@ -81,28 +84,20 @@ Removed app name from selector labels because now the app name is not going to b
 {{/*
 Create the name of the headless service to use. The headless service is used for DNS so that MapLarge nodes can communicate with each other.
 */}}
-
 {{- define "maplarge.headlessServiceName" -}}
-{{- $name := default (include "maplarge.fullname" .) .Values.headlessServiceName -}}
-{{- printf "%s" $name | trunc 63 }}
+{{- include "maplarge.fullname" . | trunc 63 }}
 {{- end }}
 
 {{/*
 Image pull secret name
 */}}
-
 {{- define "maplarge.pullSecretName" }}
-{{- if and (.Values.image) (.Values.image.pullSecretName) }}
 {{- .Values.image.pullSecretName }}
-{{- else if .Values.dockerCredentials }}
-{{- include "maplarge.fullname" . -}}-pull-secret
-{{- end}}
 {{- end }}
 
 {{/*
 `ConfigMap` name
 */}}
-
 {{- define "maplarge.configMapName" }}
 {{- include "maplarge.fullname" . -}}-config
 {{- end }}
@@ -112,7 +107,6 @@ Load balancer service name
 Naming and length defintions: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
 Max length for a DNS subdomain name is 253
 */}}
-
 {{- define "maplarge.balancerServiceName" }}
 {{- $fullnameLen := len (include "maplarge.fullname" .) -}}
 {{- $balencerLen := len "-balancer" -}}
@@ -128,21 +122,8 @@ Max length for a DNS subdomain name is 253
 {{- end }}
 
 {{/*
-Cellular (LTE) load balancer service name
-*/}}
-
-{{- define "maplarge.lteServiceName" }}
-{{- $fullnameLen := len (include "maplarge.fullname" .) -}}
-{{- $balencerLen := len "-lte-balancer" -}}
-{{- $toTrunc := sub $fullnameLen $balencerLen | int -}}
-{{- $name := include "maplarge.fullname" . | trunc $toTrunc -}}
-{{- printf "%s-%s" $name "lte-balancer" }}
-{{- end }}
-
-{{/*
 Ingress name
 */}}
-
 {{- define "maplarge.ingressName" }}
 {{- include "maplarge.fullname" . -}}-ingress
 {{- end }}
@@ -150,7 +131,6 @@ Ingress name
 {{/*
 Root password secret name
 */}}
-
 {{- define "maplarge.rootPasswordSecretName" }}
   {{- if .Values.existingRootPasswordSecretName }}
     {{- .Values.existingRootPasswordSecretName }}
@@ -162,6 +142,32 @@ Root password secret name
 {{- end }}
 
 {{/*
+The port the MapLarge container listens on. Uses listenPort if set, otherwise 8443 when
+tls.enabled is true, else 8080. Always >= 1024: the container runs as non-root without
+NET_BIND_SERVICE and cannot bind privileged ports.
+*/}}
+{{- define "maplarge.containerPort" -}}
+  {{- default (ternary 8443 8080 .Values.tls.enabled) .Values.listenPort -}}
+{{- end }}
+
+{{/*
+The in-cluster port exposed by the load balancer Service. Uses loadBalancerService.port
+if set, otherwise 443 when tls.enabled is true, else 80.
+*/}}
+{{- define "maplarge.servicePort" -}}
+  {{- default (ternary 443 80 .Values.tls.enabled) .Values.loadBalancerService.port -}}
+{{- end }}
+
+{{/*
+URL scheme used to reach the MapLarge container: https when tls.enabled is true, else http.
+Also used as the container port name so service meshes can detect the protocol.
+*/}}
+
+{{- define "maplarge.scheme" -}}
+  {{- ternary "https" "http" .Values.tls.enabled -}}
+{{- end }}
+
+{{/*
 Contents of `cluster.json` file, typically located either in `/opt/maplarge/App_Data/config/cluster.json` or `/opt/maplarge/config/cluster.json`. Important because it is used to automatically join nodes to the cluster. Currently set to autojoin every node and make every node a voting member. This behavior may be changed in the near future so that only the first few nodes are set to be voting members.
 */}}
 
@@ -170,15 +176,23 @@ Contents of `cluster.json` file, typically located either in `/opt/maplarge/App_
   {{- $statefulSetName := include "maplarge.fullname" . }}
   {{- $headlessServiceName := include "maplarge.headlessServiceName" . }}
   {{- $clusterConfigToMerge := .Values.clusterConfig }}
-  {{- $port := default 80 .Values.service.targetPort }}
-  {{- $defaultSelfAddress := printf "http://${HOSTNAME}.%s.%s:%d" $headlessServiceName .Release.Namespace (int $port) }}
-  {{- $defaultClusterName := default "maplarge-cluster" .Values.defaultClusterName }}
+  {{- $port := include "maplarge.containerPort" . }}
+  {{- $scheme := include "maplarge.scheme" . }}
+  {{- $defaultSelfAddress := printf "%s://${HOSTNAME}.%s.%s:%d" $scheme $headlessServiceName .Release.Namespace (int $port) }}
+  {{- /* Override via clusterConfig.DefaultClusterName, which wins the merge below. */}}
+  {{- $defaultClusterName := "maplarge-cluster" }}
   {{- $autoJoinMembers := list }}
   {{- $upperIndex := default .Values.replicas .Values.numberOfAutoJoinMembers }}
   {{- range untilStep 0 (int $upperIndex) 1 }}
-    {{- $autoJoinMembers = append $autoJoinMembers (printf "http://%s-%d.%s.%s:%d" $statefulSetName (int .) $headlessServiceName $namespace (int $port)) }}
+    {{- $autoJoinMembers = append $autoJoinMembers (printf "%s://%s-%d.%s.%s:%d" $scheme $statefulSetName (int .) $headlessServiceName $namespace (int $port)) }}
   {{- end }}
   {{- $clusterConfig := (dict "DefaultSelfAddress" $defaultSelfAddress "DefaultClusterName" $defaultClusterName "AutoJoinCoreClusterMembers" $autoJoinMembers ) }}
+  {{- /* With fewer than 3 nodes the default replication criteria cannot be met and
+       MapLarge logs a warning on every changeset; default the factor to 1 instead.
+       A user-supplied clusterConfig.ChangeSetReplicationFactor wins the merge. */}}
+  {{- if lt (int .Values.replicas) 3 }}
+    {{- $_ := set $clusterConfig "ChangeSetReplicationFactor" 1 }}
+  {{- end }}
   {{- $mergedClusterConfig := merge $clusterConfigToMerge $clusterConfig }}
   {{- $clusterConfigJson := toPrettyJson $mergedClusterConfig }}
   {{- $clusterConfigJson }}
@@ -186,13 +200,12 @@ Contents of `cluster.json` file, typically located either in `/opt/maplarge/App_
 
 {{/*
 Returns the proper service account name depending if an explicit service account name is set
-in the values file. If the name is not set it will default to either common.names.fullname if webhook.serviceAccount.create
-is true or default otherwise.
+in the values file. If the name is not set it will default the chart's generated name
 */}}
 {{- define "maplarge.serviceAccountName" -}}
-    {{- if or .Values.serviceAccount.create .Values.notebooks.enabled -}}
+    {{- if .Values.serviceAccount.create -}}
         {{- if (empty .Values.serviceAccount.name) -}}
-          {{- include "maplarge.name" . -}}
+          {{- include "maplarge.fullname" . -}}
         {{- else -}}
           {{ default "default" .Values.serviceAccount.name }}
         {{- end -}}
@@ -207,8 +220,8 @@ Builds the js.js based on the inputs from the values if Notebooks are enabled.
 {{- define "maplarge.jsjs" }}
   {{- $jsjs := "" -}}
   {{- $nJsjs := "" -}}
-  {{- if .Values.jsjs.value -}}
-  {{- $jsjs = cat .Values.jsjs.value "\n" }}
+  {{- if .Values.jsjs -}}
+  {{- $jsjs = cat .Values.jsjs "\n" }}
   {{- end }}
   {{- if .Values.notebooks.enabled }}
   {{- $nJsjs = "ml.config.enableNotebooks = true;"}}
@@ -223,7 +236,7 @@ it as a value and use it, otherwise, we can just use the hostname from the ingre
 {{- define "maplarge.hostname" -}}
   {{- if .Values.hostnameOverride -}}
   {{- .Values.hostnameOverride -}}
-  {{- else -}}
+  {{- else if .Values.ingress.hosts -}}
   {{- (index .Values.ingress.hosts 0).baseHostname }}
   {{- end -}}
 {{- end -}}

@@ -46,7 +46,7 @@ spec:
 
       initContainers:
         - name: get-new-version
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ include "maplarge.imageTag" . }}"
           volumeMounts:
             - name: workdir
               mountPath: /workdir
@@ -66,6 +66,10 @@ spec:
               set -e
               STS_NAME="{{ include "maplarge.fullname" . }}"
               NAMESPACE="{{ .Release.Namespace }}"
+              # Listen port and port name (scheme) this upgrade will apply, baked
+              # in at template time. Compared against the live StatefulSet below.
+              NEW_PORT="{{ include "maplarge.containerPort" . }}"
+              NEW_PORT_NAME="{{ include "maplarge.scheme" . }}"
 
               NEW_RAW=$(cat /workdir/new_version.txt | tr -d '\n')
 
@@ -79,7 +83,7 @@ spec:
 
               echo "Raw Versions: Old='$OLD_RAW', New='$NEW_RAW'"
 
-              get_build_id() {
+              get_db_version() {
                 echo "$1" | cut -d. -f4 | cut -d- -f1
               }
 
@@ -90,36 +94,51 @@ spec:
                 esac
               }
 
-              NEW_BUILD=$(get_build_id "$NEW_RAW")
-              OLD_BUILD=$(get_build_id "$OLD_RAW")
+              scale_down() {
+                kubectl scale sts $STS_NAME -n $NAMESPACE --replicas=0
 
-              echo "Parsed Build IDs: Old='$OLD_BUILD', New='$NEW_BUILD'"
+                echo "Waiting for pods to terminate..."
+                kubectl wait --for=delete pod -l app.kubernetes.io/instance={{ .Release.Name }} --timeout=300s
+                echo "Cluster scaled down. Helm will now bring up new pods."
+              }
 
-              if ! is_int "$NEW_BUILD" || ! is_int "$OLD_BUILD"; then
+              NEW_DB_VERSION=$(get_db_version "$NEW_RAW")
+              OLD_DB_VERSION=$(get_db_version "$OLD_RAW")
+
+              echo "Parsed DB Versions: Old='$OLD_DB_VERSION', New='$NEW_DB_VERSION'"
+
+              SCALE_REASON=""
+              if ! is_int "$NEW_DB_VERSION" || ! is_int "$OLD_DB_VERSION"; then
                   echo "FORMAT CHANGE DETECTED: One or both versions do not match the 4-part dot schema."
-                  echo "Treating this as a structural upgrade. Scaling down to 0 to ensure clean state..."
-
-                  kubectl scale sts $STS_NAME -n $NAMESPACE --replicas=0
-
-                  echo "Waiting for pods to terminate..."
-                  kubectl wait --for=delete pod -l app.kubernetes.io/instance={{ .Release.Name }} --timeout=300s
-                  echo "Cluster scaled down. Helm will now bring up new pods."
-              elif [ "$NEW_BUILD" -lt "$OLD_BUILD" ]; then
+                  SCALE_REASON="db version format change; treating this as a structural upgrade"
+              elif [ "$NEW_DB_VERSION" -lt "$OLD_DB_VERSION" ]; then
                   # --- DOWNGRADE PROTECTION ---
-                  MSG="BLOCKING DOWNGRADE: Target version ($NEW_BUILD) is older than current version ($OLD_BUILD). Downgrades are not supported via this pipeline. Aborting Helm upgrade."
+                  MSG="BLOCKING DOWNGRADE: Target db version ($NEW_DB_VERSION) is older than current db version ($OLD_DB_VERSION). Downgrades are not supported via this pipeline. Aborting Helm upgrade."
                   echo "$MSG"
                   echo "$MSG" > /dev/termination-log
                   exit 1
-              elif [ "$NEW_BUILD" != "$OLD_BUILD" ]; then
-                  echo "MISMATCH DETECTED! ($OLD_BUILD -> $NEW_BUILD)"
-                  echo "Scaling down to 0 to perform clean upgrade..."
+              elif [ "$NEW_DB_VERSION" != "$OLD_DB_VERSION" ]; then
+                  echo "MISMATCH DETECTED! ($OLD_DB_VERSION -> $NEW_DB_VERSION)"
+                  SCALE_REASON="db version change $OLD_DB_VERSION -> $NEW_DB_VERSION"
+              fi
 
-                  kubectl scale sts $STS_NAME -n $NAMESPACE --replicas=0
+              # A listen port or scheme change breaks the cluster mesh during a
+              # rolling update (old and new pods advertise different addresses),
+              # so it also requires a full restart.
+              if [ -z "$SCALE_REASON" ]; then
+                  OLD_PORT=$(kubectl get sts $STS_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[?(@.name=="{{ .Chart.Name }}")].ports[0].containerPort}')
+                  OLD_PORT_NAME=$(kubectl get sts $STS_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[?(@.name=="{{ .Chart.Name }}")].ports[0].name}')
+                  echo "Listen ports: Old='$OLD_PORT_NAME/$OLD_PORT', New='$NEW_PORT_NAME/$NEW_PORT'"
+                  if [ "$OLD_PORT" != "$NEW_PORT" ] || [ "$OLD_PORT_NAME" != "$NEW_PORT_NAME" ]; then
+                      echo "LISTEN PORT/SCHEME CHANGE DETECTED! ($OLD_PORT_NAME/$OLD_PORT -> $NEW_PORT_NAME/$NEW_PORT)"
+                      SCALE_REASON="listen port/scheme change"
+                  fi
+              fi
 
-                  echo "Waiting for pods to terminate..."
-                  kubectl wait --for=delete pod -l app.kubernetes.io/instance={{ .Release.Name }} --timeout=300s
-                  echo "Cluster scaled down."
+              if [ -n "$SCALE_REASON" ]; then
+                  echo "Scaling down to 0 to perform clean upgrade ($SCALE_REASON)..."
+                  scale_down
               else
-                  echo "Build IDs match ($OLD_BUILD). Standard rolling update is safe."
+                  echo "Build IDs and listen port match. Standard rolling update is safe."
               fi
 {{- end }}

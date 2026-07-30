@@ -49,7 +49,7 @@ spec:
               service:
                 name: {{ $loadBalancerServiceName }}
                 port:
-                  number: 80
+                  name: web
 {{- $baseHostname := .baseHostname -}}
 {{- range untilStep 0 (int .prefixes) 1}}
     - host: {{ printf "%d%s" . $baseHostname | lower }}
@@ -61,7 +61,7 @@ spec:
               service:
                 name: {{ $loadBalancerServiceName }}
                 port:
-                  number: 80
+                  name: web
 {{- end }}
 {{- end }}
 {{- end }}

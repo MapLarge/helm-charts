@@ -1,0 +1,15 @@
+# Findings accepted with justification — see comments per entry.
+
+# KSV-0110: "workloads should not run in the default namespace".
+# Scan artifact: `trivy config` renders the chart without a release namespace.
+# Hardcoding metadata.namespace in a chart is an anti-pattern; the namespace is
+# chosen at install time (helm install -n <ns>).
+AVD-KSV-0110
+KSV-0110
+
+# KSV-0125: "image from an untrusted registry" (docker.io default).
+# The default repository is overridden at deploy time; deployed packaged values
+# pin the platform registry. The registry is fully configurable via
+# image.repository.
+AVD-KSV-0125
+KSV-0125
