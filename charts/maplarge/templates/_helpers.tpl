@@ -41,20 +41,18 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-The image tag for the MapLarge API Server. When image.tag is unset, defaults to
-the release tag for the app version in Chart.yaml (release-core-<appVersion>).
+The image tag for the MapLarge API Server. The default (the release this chart
+was tested against) is pinned in values.yaml; the schema requires it non-empty.
 */}}
-
 {{- define "maplarge.imageTag" -}}
-{{- default (printf "release-core-%s" .Chart.AppVersion) .Values.image.tag }}
+{{- .Values.image.tag }}
 {{- end }}
 
 {{/*
 The app version used for the app.kubernetes.io/version label
 */}}
-
 {{- define "maplarge.image" -}}
-{{- include "dnsSafeTruncate" (default .Chart.AppVersion .Values.image.tag) }}
+{{- include "dnsSafeTruncate" (include "maplarge.imageTag" .) }}
 {{- end }}
 
 {{/*
@@ -77,11 +75,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{/*
 Selector labels to point the load balancer service at the appropriate pods
-
 Removed app name from selector labels because now the app name is not going to be the same for all things in the Helm chart.
-
 */}}
-
 {{- define "maplarge.selectorLabels" -}}
   app.kubernetes.io/instance: {{ include "dnsSafeTruncate" (.Release.Name) }}
 {{- end }}
@@ -89,7 +84,6 @@ Removed app name from selector labels because now the app name is not going to b
 {{/*
 Create the name of the headless service to use. The headless service is used for DNS so that MapLarge nodes can communicate with each other.
 */}}
-
 {{- define "maplarge.headlessServiceName" -}}
 {{- include "maplarge.fullname" . | trunc 63 }}
 {{- end }}
@@ -97,7 +91,6 @@ Create the name of the headless service to use. The headless service is used for
 {{/*
 Image pull secret name
 */}}
-
 {{- define "maplarge.pullSecretName" }}
 {{- .Values.image.pullSecretName }}
 {{- end }}
@@ -105,7 +98,6 @@ Image pull secret name
 {{/*
 `ConfigMap` name
 */}}
-
 {{- define "maplarge.configMapName" }}
 {{- include "maplarge.fullname" . -}}-config
 {{- end }}
@@ -115,7 +107,6 @@ Load balancer service name
 Naming and length defintions: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-subdomain-names
 Max length for a DNS subdomain name is 253
 */}}
-
 {{- define "maplarge.balancerServiceName" }}
 {{- $fullnameLen := len (include "maplarge.fullname" .) -}}
 {{- $balencerLen := len "-balancer" -}}
@@ -133,7 +124,6 @@ Max length for a DNS subdomain name is 253
 {{/*
 Ingress name
 */}}
-
 {{- define "maplarge.ingressName" }}
 {{- include "maplarge.fullname" . -}}-ingress
 {{- end }}
@@ -141,7 +131,6 @@ Ingress name
 {{/*
 Root password secret name
 */}}
-
 {{- define "maplarge.rootPasswordSecretName" }}
   {{- if .Values.existingRootPasswordSecretName }}
     {{- .Values.existingRootPasswordSecretName }}
@@ -157,7 +146,6 @@ The port the MapLarge container listens on. Uses listenPort if set, otherwise 84
 tls.enabled is true, else 8080. Always >= 1024: the container runs as non-root without
 NET_BIND_SERVICE and cannot bind privileged ports.
 */}}
-
 {{- define "maplarge.containerPort" -}}
   {{- default (ternary 8443 8080 .Values.tls.enabled) .Values.listenPort -}}
 {{- end }}
@@ -166,7 +154,6 @@ NET_BIND_SERVICE and cannot bind privileged ports.
 The in-cluster port exposed by the load balancer Service. Uses loadBalancerService.port
 if set, otherwise 443 when tls.enabled is true, else 80.
 */}}
-
 {{- define "maplarge.servicePort" -}}
   {{- default (ternary 443 80 .Values.tls.enabled) .Values.loadBalancerService.port -}}
 {{- end }}
@@ -213,13 +200,12 @@ Contents of `cluster.json` file, typically located either in `/opt/maplarge/App_
 
 {{/*
 Returns the proper service account name depending if an explicit service account name is set
-in the values file. If the name is not set it will default to either common.names.fullname if webhook.serviceAccount.create
-is true or default otherwise.
+in the values file. If the name is not set it will default the chart's generated name
 */}}
 {{- define "maplarge.serviceAccountName" -}}
-    {{- if or .Values.serviceAccount.create .Values.notebooks.enabled -}}
+    {{- if .Values.serviceAccount.create -}}
         {{- if (empty .Values.serviceAccount.name) -}}
-          {{- include "maplarge.name" . -}}
+          {{- include "maplarge.fullname" . -}}
         {{- else -}}
           {{ default "default" .Values.serviceAccount.name }}
         {{- end -}}

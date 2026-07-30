@@ -189,6 +189,9 @@
         },
         "image": {
             "type": "object",
+            "required": [
+                "tag"
+            ],
             "properties": {
                 "extraPullSecrets": {
                     "description": "An array of any extra image pull secrets to add to the pod definition, in",
@@ -219,11 +222,9 @@
                     "minLength": 1
                 },
                 "tag": {
-                    "description": "The MapLarge image tag to pull. When empty, defaults to the release tag for the chart's appVersion (release-core-\u003cappVersion\u003e).",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "description": "The MapLarge image tag to pull. Defaults to the MapLarge release this chart version was tested against; pin your own tag if you deploy a different build.",
+                    "type": "string",
+                    "minLength": 1
                 }
             },
             "additionalProperties": false
@@ -661,18 +662,40 @@
             }
         },
         "serviceAccount": {
-            "type": "object",
+            "anyOf": [
+                {
+                    "required": [
+                        "create"
+                    ],
+                    "properties": {
+                        "create": {
+                            "const": true
+                        }
+                    }
+                },
+                {
+                    "required": [
+                        "name"
+                    ],
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                }
+            ],
             "properties": {
                 "annotations": {
                     "description": "Specifies Service Account specific Annotations",
                     "type": "object"
                 },
                 "create": {
-                    "description": "Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false.",
+                    "description": "Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false and an existing service account provided via name.",
                     "type": "boolean"
                 },
                 "name": {
-                    "description": "To use an existing service account, provide the name here. If not set and create is true, a name is generated using the maplarge.name template.",
+                    "description": "To use an existing service account, provide the name here. If not set and create is true, the release fullname is used (maplarge.fullname template).",
                     "type": "string"
                 }
             },

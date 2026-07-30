@@ -36,6 +36,7 @@ Notable constraints that may catch existing values files:
 | `environmentVariables[]` | Each entry requires `name` |
 | `ingress.hosts[]` | `baseHostname` required; only `baseHostname`, `prefixes`, `tls` allowed |
 | `listenPort` | Integer, 1024–65535 (see §3) |
+| `serviceAccount` | `create: true` or a non-empty `name` required — running as the namespace `default` SA is no longer allowed (see §8) |
 
 > **ArgoCD note:** schema failures surface as a render/comparison error on the
 > Application *before* any sync — the running release is untouched. Make sure no
@@ -100,9 +101,9 @@ default to a hardened profile:
 ```yaml
 podSecurityContext:
   runAsNonRoot: true
-  runAsUser: 10001
-  runAsGroup: 10001
-  fsGroup: 10001
+  runAsUser: 30101
+  runAsGroup: 30102
+  fsGroup: 30102
   seccompProfile:
     type: RuntimeDefault
 
@@ -116,8 +117,8 @@ securityContext:
 A writable `emptyDir` is mounted at `/tmp`; `App_Data` remains the PVC. To opt out
 (e.g. cluster policy conflicts), set either value to `{}` explicitly.
 
-> **Existing volumes:** data previously written by root must become readable by UID
-> 10001. Kubernetes applies `fsGroup` ownership on mount; on large `App_Data`
+> **Existing volumes:** data previously written by root must become readable by GID
+> 30102. Kubernetes applies `fsGroup` ownership on mount; on large `App_Data`
 > volumes the recursive chown can slow the first pod start. To only re-own when
 > needed, add `fsGroupChangePolicy: "OnRootMismatch"` to `podSecurityContext`.
 
@@ -145,7 +146,7 @@ port — so the declared port now follows `listenPort`. Anything resolving pod D
 through the headless service and assuming port 80 must use `listenPort` instead
 (the generated `cluster.json` already does).
 
-#### 8. MapLarge-internal defaults removed
+#### 8. MapLarge default value changes
 
 The following defaults were specific to MapLarge's own infrastructure and have been
 removed. If you relied on them, set them explicitly:
@@ -153,17 +154,20 @@ removed. If you relied on them, set them explicitly:
 | Value | Old default | New default | Action if you relied on it |
 |---|---|---|---|
 | `image.repository` | `docker.io/maplarge/server-netcore-dev` | `docker.io/maplarge/server` | Set the dev repository explicitly if you want dev builds |
-| `image.tag` | `latest` | `""` → `release-core-<appVersion>` from Chart.yaml | Pin your own tag, or leave empty for the chart-tested release |
+| `image.tag` | `latest` | pinned to the MapLarge release the chart was tested against (e.g. `release-core-4.135`) | Pin your own tag if you deploy a different build; an empty tag is rejected by the schema |
 | `image.pullSecretName` | `maplarge-dockerhub-pull-secret` | `""` (no pull secret) | Set your pull secret name |
 | `appDataVolumeStorageClassName` | `openebs-hostpath` | renamed: `storage.storageClass`, unset (cluster default class) | Set your storage class under the new key |
 | `appDataVolumeSizeInGB` | `100` | renamed: `storage.size` (still 100) | Move the value to the new key |
 | `ingress.hosts[0].baseHostname` | `customer-a.dev.maplarge.net` | `maplarge.example.com` | Set your hostname (you almost certainly already do) |
 | `ingress.hosts[0].tls` | enabled, MapLarge wildcard secret | disabled, no secret | Set your TLS secret |
 | `requireNodeAntiAffinity` | `true` | `false` | Set `true` explicitly for production spread guarantees |
+| `serviceAccount.create` | `false` (fell back to the `default` SA) | `true` — every release runs with a defined service account | If you cannot create SAs, set `create: false` **and** point `serviceAccount.name` at an existing one; the schema rejects `create: false` with no name |
+| generated ServiceAccount name | chart name (`maplarge`) — collided when multiple releases shared a namespace | release fullname | If you referenced the generated SA name in RBAC bindings or IRSA trust policies, update it to the release fullname (or pin `serviceAccount.name`). The chart also no longer creates an SA when `notebooks.enabled` is set with `create: false` — a named existing SA is used as-is |
 | `jsjs.value` | nested string | flattened: `jsjs` is now the string itself | Move the content up one level: `jsjs: \|` |
 | `useTransactionalDatabase` | `true` (set `ML_USE_TRANSACTIONAL_DATABASE`) | removed — the chart no longer sets the env var; the app default applies | Add `ML_USE_TRANSACTIONAL_DATABASE` to `environmentVariables` if you need it pinned |
+|`extraEnvironmentVariables` | [] | removed  - the value is no longer accepted | (see note below) |
 
-Also removed: the chart no longer sets `ML_REPL_ENABLED` (v3 hardcoded it to
+Also removed: the chart no longer sets `ML_REPL_ENABLED` on the StatefulSet (v3 hardcoded it to
 `"false"`). If your deployment depends on it being explicitly set, add it to
 `environmentVariables`.
 

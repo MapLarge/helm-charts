@@ -83,7 +83,7 @@ spec:
 
               echo "Raw Versions: Old='$OLD_RAW', New='$NEW_RAW'"
 
-              get_build_id() {
+              get_db_version() {
                 echo "$1" | cut -d. -f4 | cut -d- -f1
               }
 
@@ -102,24 +102,24 @@ spec:
                 echo "Cluster scaled down. Helm will now bring up new pods."
               }
 
-              NEW_BUILD=$(get_build_id "$NEW_RAW")
-              OLD_BUILD=$(get_build_id "$OLD_RAW")
+              NEW_DB_VERSION=$(get_db_version "$NEW_RAW")
+              OLD_DB_VERSION=$(get_db_version "$OLD_RAW")
 
-              echo "Parsed Build IDs: Old='$OLD_BUILD', New='$NEW_BUILD'"
+              echo "Parsed DB Versions: Old='$OLD_DB_VERSION', New='$NEW_DB_VERSION'"
 
               SCALE_REASON=""
-              if ! is_int "$NEW_BUILD" || ! is_int "$OLD_BUILD"; then
+              if ! is_int "$NEW_DB_VERSION" || ! is_int "$OLD_DB_VERSION"; then
                   echo "FORMAT CHANGE DETECTED: One or both versions do not match the 4-part dot schema."
-                  SCALE_REASON="version format change; treating this as a structural upgrade"
-              elif [ "$NEW_BUILD" -lt "$OLD_BUILD" ]; then
+                  SCALE_REASON="db version format change; treating this as a structural upgrade"
+              elif [ "$NEW_DB_VERSION" -lt "$OLD_DB_VERSION" ]; then
                   # --- DOWNGRADE PROTECTION ---
-                  MSG="BLOCKING DOWNGRADE: Target version ($NEW_BUILD) is older than current version ($OLD_BUILD). Downgrades are not supported via this pipeline. Aborting Helm upgrade."
+                  MSG="BLOCKING DOWNGRADE: Target db version ($NEW_DB_VERSION) is older than current db version ($OLD_DB_VERSION). Downgrades are not supported via this pipeline. Aborting Helm upgrade."
                   echo "$MSG"
                   echo "$MSG" > /dev/termination-log
                   exit 1
-              elif [ "$NEW_BUILD" != "$OLD_BUILD" ]; then
-                  echo "MISMATCH DETECTED! ($OLD_BUILD -> $NEW_BUILD)"
-                  SCALE_REASON="build change $OLD_BUILD -> $NEW_BUILD"
+              elif [ "$NEW_DB_VERSION" != "$OLD_DB_VERSION" ]; then
+                  echo "MISMATCH DETECTED! ($OLD_DB_VERSION -> $NEW_DB_VERSION)"
+                  SCALE_REASON="db version change $OLD_DB_VERSION -> $NEW_DB_VERSION"
               fi
 
               # A listen port or scheme change breaks the cluster mesh during a

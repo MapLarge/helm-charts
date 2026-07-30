@@ -8,7 +8,7 @@ AVD-KSV-0110
 KSV-0110
 
 # KSV-0125: "image from an untrusted registry" (docker.io default).
-# The default repository is overridden at deploy time; Bifrost packaged values
+# The default repository is overridden at deploy time; deployed packaged values
 # pin the platform registry. The registry is fully configurable via
 # image.repository.
 AVD-KSV-0125

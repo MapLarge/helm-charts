@@ -18,9 +18,9 @@ image:  # @schema additionalProperties: false
   # -- The fully qualified repository where the MapLarge image should be pulled from
   # @section -- Image Information
   repository: docker.io/maplarge/server  # @schema minLength: 1
-  # -- The MapLarge image tag to pull. When empty, defaults to the release tag for the chart's appVersion (release-core-<appVersion>).
+  # -- The MapLarge image tag to pull. Defaults to the MapLarge release this chart version was tested against; pin your own tag if you deploy a different build.
   # @section -- Image Information
-  tag: ""  # @schema type: [string, null]
+  tag: release-core-4.135  # @schema minLength: 1 ; required: true
 
 license:  # @schema additionalProperties: false
   # -- A secret name for an existing license secret. If creating your own license secret, the key must be "_maplarge_license.lic"
@@ -144,11 +144,14 @@ config:  # @schema type: [object, null]
   # are only running simple shell commands
   # workloadSchedulerScratchImage: "busybox"
 
-serviceAccount:  # @schema additionalProperties: false
-  # -- Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false.
+# MapLarge must always run with a dedicated service account: either the chart
+# creates one (create: true) or an existing one is named. The anyOf below
+# rejects create: false with an empty name.
+serviceAccount:  # @schema additionalProperties: false ; anyOf: [{"properties": {"create": {"const": true}}, "required": ["create"]}, {"properties": {"name": {"type": "string", "minLength": 1}}, "required": ["name"]}]
+  # -- Specificies whether a service account should be created. If the deploying user does not have permissions to create an SA, then this value should be set to false and an existing service account provided via name.
   # @section -- General
-  create: false
-  # -- To use an existing service account, provide the name here. If not set and create is true, a name is generated using the maplarge.name template.
+  create: true
+  # -- To use an existing service account, provide the name here. If not set and create is true, the release fullname is used (maplarge.fullname template).
   # @section -- General
   name: ""
   # -- Specifies Service Account specific Annotations
