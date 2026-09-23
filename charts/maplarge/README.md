@@ -106,8 +106,8 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | ingress.annotations | object | `{}` | Annotations to set on the ingress object. No annotations are set by default; add any ingress controller-specific annotations here as needed. |
 | ingress.class | string | `""` | Ingress class to use. If not set, no ingressClassName will be set on the resource. |
 | ingress.enabled | bool | `true` | Enable ingress object |
-| ingress.hosts[0] | object | `{"baseHostname":"maplarge.example.com","prefixes":8,"tls":{"enabled":false,"secretName":null}}` | Custom DNS name where MapLarge can be reached |
-| ingress.hosts[0].prefixes | int | `8` | The number of dns prefixes to create |
+| ingress.hosts[0] | object | `{"baseHostname":"maplarge.example.com","prefixes":0,"tls":{"enabled":false,"secretName":null}}` | Custom DNS name where MapLarge can be reached |
+| ingress.hosts[0].prefixes | int | `0` | The number of dns prefixes to create |
 | ingress.hosts[0].tls.enabled | bool | `false` | Controls if the site is TLS protected |
 | ingress.hosts[0].tls.secretName | string | `nil` | The TLS secret to use if TLS protected |
 
