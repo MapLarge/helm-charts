@@ -135,8 +135,8 @@ spec:
           - name: ml_cfg_externalProcessingEnabled
             value: "True"
           {{- end }}
-          {{- if .Values.environmentVariables }}
-          {{- (toYaml .Values.environmentVariables | nindent 10) }}
+          {{- with (include "maplarge.environmentVariables" . | trim) }}
+          {{- . | nindent 10 }}
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ include "maplarge.imageTag" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}

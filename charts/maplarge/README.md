@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 4.0.1](https://img.shields.io/badge/Version-4.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 4.1.0](https://img.shields.io/badge/Version-4.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 ## Additional Information
 
@@ -47,6 +47,7 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | corsAllowedOrigins | string | `"%"` | Allowed CORS origins (sets ML_CORS_ALLOWED_ORIGINS) |
 | corsEnabled | bool | `true` | Enables CORS in the MapLarge client config (sets ML_CLIENT_CONFIG_ENABLE_CORS) |
 | environmentVariables | list | `[]` | A list of extra environment variables to be added to the MapLarge container |
+| environmentVariablesMap | object | `{}` | A map of extra environment variables (name to value or EnvVar body) to be added to the MapLarge container |
 | existingRootPasswordSecretName | string | `nil` | An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword` |
 | homepageRedirect | string | `"dashboard"` | Redirect target for the homepage (sets ml_cfg_homepageRedirect). Set to null to omit the env var. |
 | jsjs | string | `nil` | Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line. |

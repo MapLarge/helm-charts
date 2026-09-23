@@ -83,6 +83,19 @@
                 }
             }
         },
+        "environmentVariablesMap": {
+            "description": "A map of extra environment variables (name to value or EnvVar body) to be added to the MapLarge container",
+            "type": "object",
+            "patternProperties": {
+                "^[-._a-zA-Z][-._a-zA-Z0-9]*$": {
+                    "type": [
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
         "existingRootPasswordSecretName": {
             "description": "An existing secret that contains a value that will be used as the root password; the key must be set to `rootPassword`",
             "type": [

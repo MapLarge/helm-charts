@@ -290,3 +290,27 @@ Defines a name for the license directory as used by the File Globs
 {{- $path := printf "%s/*" "license" }}
 {{- printf "%s" $path }}
 {{- end }}
+
+{{/*
+environmentVariables (list) and environmentVariablesMap (map) render as one
+deduplicated block: list order first, new map names appended key-sorted, and a
+map entry replaces a list entry of the same name.
+*/}}
+{{- define "maplarge.environmentVariables" }}
+{{- $envNames := list }}
+{{- $envSpecs := dict }}
+{{- range .Values.environmentVariables }}
+{{- if not (hasKey $envSpecs .name) }}{{- $envNames = append $envNames .name }}{{- end }}
+{{- $_ := set $envSpecs .name (omit . "name") }}
+{{- end }}
+{{- range $name, $value := .Values.environmentVariablesMap }}
+{{- if not (hasKey $envSpecs $name) }}{{- $envNames = append $envNames $name }}{{- end }}
+{{- $_ := set $envSpecs $name (kindIs "string" $value | ternary (dict "value" $value) $value) }}
+{{- end }}
+{{- range $envNames }}
+- name: {{ . }}
+  {{- with (get $envSpecs .) }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}
+{{- end }}
