@@ -95,7 +95,6 @@ storage:  # @schema additionalProperties: false
   # @section -- Storage Information
   storageClass:  # @schema type: [string, null]
 
-
 # -- If set, the root password will be set according to this value, otherwise a default value is created
 # @section -- MapLarge Configuration
 rootPassword:  # @schema type: [string, null]
@@ -132,6 +131,20 @@ homepageRedirect: dashboard  # @schema type: [string, null]
 # @section -- MapLarge Configuration
 environmentVariables: []  # @schema item: object ; itemProperties: {"name": {"type": "string"}} ; allOf: [{"items": {"required": ["name"]}}]
 
+# A map of Environment Variables that can be deep-merged across multiple helm values
+# files. Each value is either a string or the EnvVar body (valueFrom etc.). Rendered
+# together with the environmentVariables list; a map entry replaces a list entry of the same name.
+# -- A map of extra environment variables (name to value or EnvVar body) to be added to the MapLarge container
+# @section -- MapLarge Configuration
+environmentVariablesMap: {}  # @schema patternProperties: {"^[-._a-zA-Z][-._a-zA-Z0-9]*$": {"type": ["object", "string"]}} ; additionalProperties: false
+# Example
+#   environmentVariablesMap:
+#     ENV_VAR1: "some value"
+#     ENV_VAR2:
+#       valueFrom:
+#         secretKeyRef:
+#           name: my-secret
+
 # -- Allows for custom configurations for the js.js. This value is read in as-is, so each js.js option needs to be on it's own line.
 # @section -- MapLarge Configuration
 jsjs:  # @schema type: [string, null]
@@ -157,7 +170,6 @@ serviceAccount:  # @schema additionalProperties: false ; anyOf: [{"properties": 
   # -- Specifies Service Account specific Annotations
   # @section -- General
   annotations: {}
-
 
 # -- Set to true if you want to prefer that your replicas are placed on distinct nodes.
 # @section -- General
@@ -286,7 +298,6 @@ podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
 
-
 # -- Sets the container securityContext. Defaults block privilege escalation, drop all capabilities, and mount the root filesystem read-only (/tmp is an emptyDir; App_Data is the PVC). Set to {} to fall back to cluster defaults.
 # @section -- General
 securityContext:
@@ -353,7 +364,6 @@ readinessProbe:
   # @section -- Probe Configurations
   timeoutSeconds: 2
 
-
 notebooks:  # @schema additionalProperties: false
   # -- Enables MapLarge Notebooks and creates the necessary Service Account, Role and RoleBinding
   # @section -- Notebook configurations
@@ -398,7 +408,6 @@ tls:  # @schema additionalProperties: false
 # @section -- Ingress Configuration
 hostnameOverride:  # @schema type: [string, null]
 
-
 # Specifies an authentication plugin
 authPlugin:  # @schema additionalProperties: false
   # -- Determines if the authPlugin should be enabled
@@ -430,9 +439,9 @@ ingress:  # @schema additionalProperties: false
     # -- Custom DNS name where MapLarge can be reached
     # @section -- Ingress Configuration
     - baseHostname: maplarge.example.com  # @schema required: true ; minLength: 1
-    # -- The number of dns prefixes to create
-    # @section -- Ingress Configuration
-      prefixes: 8  # @schema minimum: 0
+      # -- The number of dns prefixes to create
+      # @section -- Ingress Configuration
+      prefixes: 0  # @schema minimum: 0
       tls:  # @schema additionalProperties: false
         # -- Controls if the site is TLS protected
         # @section -- Ingress Configuration
