@@ -434,6 +434,12 @@ ingress:  # @schema additionalProperties: false
   # add any ingress controller-specific annotations here as needed.
   # @section -- Ingress Configuration
   annotations: {}  # @schema additionalProperties: {"type": "string"}
+  # -- Additional paths rendered before the default path on every host rule. Each entry is a
+  # networking.k8s.io/v1 HTTPIngressPath. Useful for ALB action backends, where
+  # backend.service.name matches the suffix of an alb.ingress.kubernetes.io/actions.<name>
+  # annotation and backend.service.port.name is use-annotation.
+  # @section -- Ingress Configuration
+  extraPaths: []  # @schema item: object ; allOf: [{"items": {"required": ["path", "pathType", "backend"]}}]
   hosts:  # @schema minItems: 1 ; allOf: [{"items": {"propertyNames": {"enum": ["baseHostname", "prefixes", "tls"]}}}]
     # Usually you only need one host here, but this is an array field and accepts multiple values.
     # -- Custom DNS name where MapLarge can be reached
