@@ -1,5 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $annotations := .Values.ingress.annotations -}}
+{{- $extraPaths := .Values.ingress.extraPaths -}}
 {{- $fullName := include "maplarge.fullname" . -}}
 {{- $ingressName := include "maplarge.ingressName" . -}}
 {{- $loadBalancerServiceName := include "maplarge.balancerServiceName" . -}}
@@ -43,6 +44,9 @@ spec:
     - host: {{ .baseHostname | lower | quote }}
       http:
         paths:
+{{- with $extraPaths }}
+          {{- toYaml . | nindent 10 }}
+{{- end }}
           - path: /
             pathType: Prefix
             backend:
@@ -55,6 +59,9 @@ spec:
     - host: {{ printf "%d%s" . $baseHostname | lower }}
       http:
         paths:
+{{- with $extraPaths }}
+          {{- toYaml . | nindent 10 }}
+{{- end }}
           - path: /
             pathType: Prefix
             backend:

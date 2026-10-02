@@ -26,6 +26,8 @@ tls:
   bogusField: true        # additionalProperties:false on tls
 ingress:
   enabled: true
+  extraPaths:
+    - path: /             # items require pathType and backend
   hosts:
     - baseHostname: ""    # violates minLength:1; required
       prefixes: -1        # violates minimum:0

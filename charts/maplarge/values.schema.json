@@ -263,6 +263,23 @@
                     "description": "Enable ingress object",
                     "type": "boolean"
                 },
+                "extraPaths": {
+                    "description": "Additional paths rendered before the default path on every host rule. Each entry is a networking.k8s.io/v1 HTTPIngressPath. Useful for ALB action backends, where backend.service.name matches the suffix of an alb.ingress.kubernetes.io/actions.\u003cname\u003e annotation and backend.service.port.name is use-annotation.",
+                    "allOf": [
+                        {
+                            "items": {
+                                "required": [
+                                    "path",
+                                    "pathType",
+                                    "backend"
+                                ]
+                            }
+                        }
+                    ],
+                    "items": {
+                        "type": "object"
+                    }
+                },
                 "hosts": {
                     "allOf": [
                         {
