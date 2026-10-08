@@ -2,7 +2,7 @@
 
 MapLarge Kubernetes Helm Chart
 
-![Version: 4.2.0](https://img.shields.io/badge/Version-4.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 4.3.0](https://img.shields.io/badge/Version-4.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 ## Additional Information
 
@@ -106,11 +106,12 @@ $ helm install maplarge maplarge -f custom.values.yaml
 | ingress.annotations | object | `{}` | Annotations to set on the ingress object. No annotations are set by default; add any ingress controller-specific annotations here as needed. |
 | ingress.class | string | `""` | Ingress class to use. If not set, no ingressClassName will be set on the resource. |
 | ingress.enabled | bool | `true` | Enable ingress object |
-| ingress.extraPaths | list | `[]` | Additional paths rendered before the default path on every host rule. Each entry is a networking.k8s.io/v1 HTTPIngressPath. Useful for ALB action backends, where backend.service.name matches the suffix of an alb.ingress.kubernetes.io/actions.<name> annotation and backend.service.port.name is use-annotation. |
+| ingress.extraPaths | list | `[]` | Additional paths rendered before the default path on every host rule. Each entry is a networking.k8s.io/v1 HTTPIngressPath. Useful for ALB action backends, where backend.service.name matches the suffix of an alb.ingress.kubernetes.io/actions.<name> annotation and backend.service.port.name is use-annotation. path is required for Exact and Prefix entries and optional for ImplementationSpecific, matching the Kubernetes API. |
 | ingress.hosts[0] | object | `{"baseHostname":"maplarge.example.com","prefixes":0,"tls":{"enabled":false,"secretName":null}}` | Custom DNS name where MapLarge can be reached |
 | ingress.hosts[0].prefixes | int | `0` | The number of dns prefixes to create |
 | ingress.hosts[0].tls.enabled | bool | `false` | Controls if the site is TLS protected |
 | ingress.hosts[0].tls.secretName | string | `nil` | The TLS secret to use if TLS protected |
+| ingress.pathType | string | `"Prefix"` | pathType of the default catch-all path on every host rule. Prefix renders path "/". ImplementationSpecific renders path "/*". Use ImplementationSpecific when extraPaths contains ImplementationSpecific entries (e.g. regex path conditions): the controller sorts Prefix paths ahead of ImplementationSpecific ones, so with Prefix the catch-all would be evaluated before them. |
 
 ### Image Information
 

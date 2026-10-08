@@ -26,8 +26,11 @@ tls:
   bogusField: true        # additionalProperties:false on tls
 ingress:
   enabled: true
+  defaultPathType: Exact   # not in enum [Prefix, ImplementationSpecific]
   extraPaths:
     - path: /             # items require pathType and backend
+    - pathType: Prefix    # path is required when pathType is Exact or Prefix
+      backend: {service: {name: web, port: {name: web}}}
   hosts:
     - baseHostname: ""    # violates minLength:1; required
       prefixes: -1        # violates minimum:0
