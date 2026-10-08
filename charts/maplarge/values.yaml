@@ -440,7 +440,7 @@ ingress:  # @schema additionalProperties: false
   # the controller sorts Prefix paths ahead of ImplementationSpecific ones, so with Prefix
   # the catch-all would be evaluated before them.
   # @section -- Ingress Configuration
-  defaultPathType: Prefix  # @schema enum: [Prefix, ImplementationSpecific]
+  pathType: Prefix  # @schema enum: [Prefix, ImplementationSpecific]
   # -- Additional paths rendered before the default path on every host rule. Each entry is a
   # networking.k8s.io/v1 HTTPIngressPath. Useful for ALB action backends, where
   # backend.service.name matches the suffix of an alb.ingress.kubernetes.io/actions.<name>

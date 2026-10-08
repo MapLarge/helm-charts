@@ -259,7 +259,7 @@
                         "null"
                     ]
                 },
-                "defaultPathType": {
+                "pathType": {
                     "description": "pathType of the default catch-all path on every host rule. Prefix renders path \"/\". ImplementationSpecific renders path \"/*\". Use ImplementationSpecific when extraPaths contains ImplementationSpecific entries (e.g. regex path conditions): the controller sorts Prefix paths ahead of ImplementationSpecific ones, so with Prefix the catch-all would be evaluated before them.",
                     "type": "string",
                     "enum": [
