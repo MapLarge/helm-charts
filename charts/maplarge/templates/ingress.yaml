@@ -1,6 +1,8 @@
 {{- if .Values.ingress.enabled -}}
 {{- $annotations := .Values.ingress.annotations -}}
 {{- $extraPaths := .Values.ingress.extraPaths -}}
+{{- $defaultPathType := .Values.ingress.defaultPathType | default "Prefix" -}}
+{{- $defaultPath := ternary "/*" "/" (eq $defaultPathType "ImplementationSpecific") -}}
 {{- $fullName := include "maplarge.fullname" . -}}
 {{- $ingressName := include "maplarge.ingressName" . -}}
 {{- $loadBalancerServiceName := include "maplarge.balancerServiceName" . -}}
@@ -47,8 +49,8 @@ spec:
 {{- with $extraPaths }}
           {{- toYaml . | nindent 10 }}
 {{- end }}
-          - path: /
-            pathType: Prefix
+          - path: {{ $defaultPath }}
+            pathType: {{ $defaultPathType }}
             backend:
               service:
                 name: {{ $loadBalancerServiceName }}
@@ -62,8 +64,8 @@ spec:
 {{- with $extraPaths }}
           {{- toYaml . | nindent 10 }}
 {{- end }}
-          - path: /
-            pathType: Prefix
+          - path: {{ $defaultPath }}
+            pathType: {{ $defaultPathType }}
             backend:
               service:
                 name: {{ $loadBalancerServiceName }}
